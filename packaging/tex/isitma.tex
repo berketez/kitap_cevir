@@ -1,0 +1,253 @@
+%% isitma.tex — tectonic paket önbelleğini kurulum sırasında doldurmak için ısıtma belgesi (PROTOTİP).
+%% Önsöz: latex_pipeline/templates/turkish_book.tex'in 29 Eylül 2026 HEAD (f20f7a6) çıktısından (bir EPUB derlemesinin book_tr.tex önsözü).
+%% Şablon değişirse bu dosya yeniden üretilmeli (bkz. RAPOR.md).
+%% turkish_book.tex -- XeLaTeX preamble for Turkish book typesetting
+%% This file is used as a template by template_engine.py.
+%% Placeholders: DOCUMENT_CLASS, PAPER_SIZE, FONT_SIZE,
+%%               FONT_MAIN, FONT_SANS, FONT_MONO, FONT_MATH, CONTENT
+
+\documentclass[a4paper,11pt,openany,oneside]{book}
+
+%% --- Encoding & Language ---------------------------------------------------
+\usepackage{polyglossia}
+\setmainlanguage{turkish}
+\setotherlanguage{english}
+
+%% --- Fonts (fontspec -- XeLaTeX only) --------------------------------------
+\usepackage{fontspec}
+% Once config/layout'un istedigi font denenir ({{FONT_*}} placeholder'lari);
+% sistemde yoksa Latin Modern DOSYA adiyla yuklenir (kpathsea texmf agacinda
+% bulur; macOS texlive XeTeX'in fontconfig/CoreText isim-lookup sorununu
+% baypas eder). 2026-07-17 (#53): placeholder'lar baslikta belgelenmis ama
+% govdede hic kullanilmiyordu — layout font eslemesi sessizce cope gidiyordu.
+\IfFontExistsTF{STIX Two Text}{%
+  \setmainfont{STIX Two Text}%
+}{%
+  \setmainfont{lmroman10-regular.otf}[
+    BoldFont=lmroman10-bold.otf,
+    ItalicFont=lmroman10-italic.otf,
+    BoldItalicFont=lmroman10-bolditalic.otf]%
+}
+\IfFontExistsTF{Helvetica Neue}{%
+  \setsansfont{Helvetica Neue}%
+}{%
+  \setsansfont{lmsans10-regular.otf}[
+    BoldFont=lmsans10-bold.otf,
+    ItalicFont=lmsans10-oblique.otf,
+    BoldItalicFont=lmsans10-boldoblique.otf]%
+}
+\IfFontExistsTF{Menlo}{%
+  \setmonofont{Menlo}%
+}{%
+  \setmonofont{lmmono10-regular.otf}[
+    BoldFont=lmmonolt10-bold.otf,
+    ItalicFont=lmmono10-italic.otf,
+    BoldItalicFont=lmmonolt10-boldoblique.otf]%
+}
+
+%% --- Mathematics -----------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\IfFontExistsTF{STIX Two Math}{%
+  \setmathfont{STIX Two Math}%
+}{%
+  \setmathfont{latinmodern-math.otf}%
+}
+% Marker bold vektörler için \bm üretir; bm paketi unicode-math ile çakışır.
+% \bm -> \symbf (unicode-math native bold) alias'ı (math kitapları için):
+\newcommand{\bm}[1]{\symbf{#1}}
+
+%% --- Glif yedekleri ve ondalık virgül (R4/R15, 2026-09-25) -------------------
+\makeatletter
+% (1) Matematikte harf: unicode-math'in eşlemediği harfler (Türkçe ç ğ ş ö ü
+% İ, öteki Latin harfleri, Kiril) eski cmmi yazı tipine düşüp BASILMIYORDU
+% ("Missing character ... in font cmmi10/cmmi7": p_н -> "p"). Yalnız eşlenmemiş
+% olanlar (aile 1) metin yazı tipinden alınır: Latin italik (matematik
+% değişkeni gibi), Kiril dik (Rus dizgisinde Kiril indis diktir). \mathrm{}
+% içinde dik harf çıkar (sınıf 7). 2026-09-28: aralık değiştirici harfler
+% (ˆ ˇ ʹ; Marker şapkayı harfin yanına ayrı yazıyor: "gˆ_{1}") ve Latin
+% genişletilmiş ek (ẋ ẍ) de aynı yoldan; İngilizce bir test kitabında cmmi7'de
+% eksik ˆ görülmüştü.
+\IfFontExistsTF{STIXTwoText-Regular.otf}{%
+  \newfontfamily\kc@mathletterfont{STIXTwoText}[
+    Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
+    BoldFont=*-Bold, BoldItalicFont=*-BoldItalic, NFSSFamily=kcmathlet]%
+  \def\kc@mathletfam{kcmathlet}%
+}{%
+  \edef\kc@mathletfam{\rmdefault}%
+}
+\DeclareSymbolFont{kcmathlatin}{TU}{\kc@mathletfam}{m}{it}
+\SetSymbolFont{kcmathlatin}{bold}{TU}{\kc@mathletfam}{b}{it}
+\DeclareSymbolFont{kcmathcyr}{TU}{\kc@mathletfam}{m}{n}
+\SetSymbolFont{kcmathcyr}{bold}{TU}{\kc@mathletfam}{b}{n}
+\newcount\kc@cp
+\newcount\kc@fam
+\def\kc@mathletters#1#2#3{%
+  \kc@cp=#1\relax
+  \loop
+    \kc@fam=\Umathcodenum\kc@cp
+    \divide\kc@fam by "1000000\relax
+    \ifnum\kc@fam=\@ne
+      \Umathcode\kc@cp=7 #3 \kc@cp
+    \fi
+  \ifnum\kc@cp<#2\relax \advance\kc@cp\@ne \repeat}
+\AtBeginDocument{%
+  \kc@mathletters{"00C0}{"024F}{\symkcmathlatin}%
+  \kc@mathletters{"02B0}{"02FF}{\symkcmathlatin}% aralık değiştirici harfler
+  \kc@mathletters{"1E00}{"1EFF}{\symkcmathlatin}% Latin genişletilmiş ek
+  \kc@mathletters{"0400}{"052F}{\symkcmathcyr}%
+}
+% (2) Metinde yedek yazı tipi: ana yazı tipinde OLMAYAN glifler (ör. STIX Two
+% Text'te ◦ U+25E6, √, Yunanca ἡ; Latin Modern'da Yunanca/Kiril, ∆, ≤)
+% yedek yazı tipinden basılır. Hangi harfin eksik olduğu belge başında
+% \iffontchar ile ölçülür; ana yazı tipinde olan hiçbir harfe dokunulmaz.
+% XeTeX harf sınıfı geçişleri yalnız metin kipinde çalışır, matematik
+% etkilenmez; \text{} içindeki Kiril de buradan yararlanır.
+\IfFontExistsTF{FreeSerif.otf}{%
+  \newfontfamily\kc@fallbackfamily{FreeSerif}[
+    Extension=.otf, UprightFont=*, BoldFont=*Bold, ItalicFont=*Italic,
+    BoldItalicFont=*BoldItalic, Scale=MatchLowercase]%
+  \font\kc@fallbackprobe="[FreeSerif.otf]" at 10pt\relax
+  \chardef\kc@havefallback=1
+}{%
+  \IfFontExistsTF{DejaVuSerif.ttf}{%
+    \newfontfamily\kc@fallbackfamily{DejaVuSerif}[
+      Extension=.ttf, UprightFont=*, BoldFont=*-Bold, ItalicFont=*-Italic,
+      BoldItalicFont=*-BoldItalic, Scale=MatchLowercase]%
+    \font\kc@fallbackprobe="[DejaVuSerif.ttf]" at 10pt\relax
+    \chardef\kc@havefallback=1
+  }{\chardef\kc@havefallback=0 }%
+}
+\newXeTeXintercharclass\kc@fallbackclass
+\def\kc@fallbacktoks#1{%
+  \XeTeXinterchartoks#1\kc@fallbackclass=\expandafter{%
+    \the\XeTeXinterchartoks#1\z@\begingroup\kc@fallbackfamily}%
+  \XeTeXinterchartoks\kc@fallbackclass#1=\expandafter{%
+    \expandafter\endgroup\the\XeTeXinterchartoks\z@#1}}
+\def\kc@fallbackscan#1#2{%
+  \kc@cp=#1\relax
+  \loop
+    \iffontchar\font\kc@cp\else
+      \iffontchar\kc@fallbackprobe\kc@cp
+        \global\XeTeXcharclass\kc@cp=\kc@fallbackclass
+      \fi
+    \fi
+  \ifnum\kc@cp<#2\relax \advance\kc@cp\@ne \repeat}
+% polyglossia dili (ve Türkçe noktalama geçişlerini) begindocument/end'de
+% kurar; yedek sınıfın geçişleri onun ARDINDAN kopyalanmalı.
+\AddToHook{begindocument/end}[kitapcevir/fallback]{%
+  \ifnum\kc@havefallback=\@ne
+    \begingroup
+      \normalfont
+      \kc@fallbackscan{"0370}{"03FF}% Yunanca
+      \kc@fallbackscan{"0400}{"052F}% Kiril
+      \kc@fallbackscan{"1F00}{"1FFF}% Yunanca (çok tonlu)
+      \kc@fallbackscan{"2010}{"205E}% genel noktalama (′ ″ ‰)
+      \kc@fallbackscan{"2070}{"20CF}% üst/alt simge, para birimi
+      \kc@fallbackscan{"2100}{"23FF}% harf benzeri, sayı biçimi, ok, matematik
+      \kc@fallbackscan{"25A0}{"25FF}% geometrik şekil (◦)
+      \kc@fallbackscan{"2A00}{"2AFF}% ek matematik işlemleri
+      \kc@fallbackscan{"1D400}{"1D7FF}% matematik harf ve rakamları
+    \endgroup
+    % Her sınıftan (4095 = sınır) yedek sınıfa geçişte grup açılır, çıkışta
+    % kapanır; aradaki harfler yedek yazı tipiyle dizilir. Yedek sınıf öteki
+    % sınıflara karşı sınıf 0 gibi davranır (ör. Türkçe "!" ":" "=" önü
+    % boşluk kuralı): sınıf 0'ın geçiş dizgisi grubun dışında korunur.
+    \kc@cp=\z@
+    \loop
+      \kc@fallbacktoks\kc@cp
+    \ifnum\kc@cp<\numexpr\kc@fallbackclass-\@ne\relax \advance\kc@cp\@ne \repeat
+    \kc@fallbacktoks{4095}%
+    \XeTeXinterchartokenstate=\@ne
+  \fi
+}
+\DeclareHookRule{begindocument/end}{kitapcevir/fallback}{after}{polyglossia}
+% (3) Ondalık virgül: matematikte virgülden hemen sonra rakam geliyorsa
+% virgül noktalama değil sayı parçasıdır ("998,2" -> "998, 2" olmaz).
+% icomma paketinin unicode-math uyumlu, yalnız rakama bakan eşdeğeri:
+% "f(x,y)" ve "1, 2" eskisi gibi kalır.
+\newif\ifkc@digit
+\def\kc@smartcomma{%
+  \kc@digitfalse
+  \ifx\kc@nexttoken0\kc@digittrue\fi \ifx\kc@nexttoken1\kc@digittrue\fi
+  \ifx\kc@nexttoken2\kc@digittrue\fi \ifx\kc@nexttoken3\kc@digittrue\fi
+  \ifx\kc@nexttoken4\kc@digittrue\fi \ifx\kc@nexttoken5\kc@digittrue\fi
+  \ifx\kc@nexttoken6\kc@digittrue\fi \ifx\kc@nexttoken7\kc@digittrue\fi
+  \ifx\kc@nexttoken8\kc@digittrue\fi \ifx\kc@nexttoken9\kc@digittrue\fi
+  \ifkc@digit\mathord\fi\kc@mathcomma}
+{\catcode`\,=\active
+  \gdef,{\futurelet\kc@nexttoken\kc@smartcomma}}
+\AtBeginDocument{%
+  \Umathcharnumdef\kc@mathcomma=\Umathcodenum`\,\relax
+  \mathcode`\,="8000\relax
+}
+\makeatother
+
+%% --- Graphics & Figures ----------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+
+%% --- Tables ----------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+%% --- Code listings ---------------------------------------------------------
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    tabsize=4,
+}
+
+%% --- Hyperlinks & Colors ---------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+\usepackage[
+    colorlinks=true,
+    linkcolor=NavyBlue,
+    citecolor=OliveGreen,
+    urlcolor=BrickRed,
+]{hyperref}
+% Uzun URL'ler dar metin sutununda margin disina tasiyor; xurl her yerden
+% kirilmasini saglar. emergencystretch son care satir esnetmesi. (Yol A, 2026-06-19)
+\usepackage{xurl}
+\emergencystretch=3em
+
+%% --- Misc ------------------------------------------------------------------
+% \sout (ustu cizili, Markdown ~~...~~) icin; normalem: \emph davranisi
+% bozulmasin (#52 — paket yuklu degildi, her ~~...~~ Undefined control
+% sequence uretiyordu).
+\usepackage[normalem]{ulem}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+
+%% --- Custom commands (convenience) -----------------------------------------
+%% None yet -- add project-specific macros here.
+
+\begin{document}
+\frontmatter
+\tableofcontents
+\mainmatter
+\chapter{Isıtma}
+\section{Türkçe karakterler}
+Çalışma, ğ, ı, İ, ö, ş, ü; Ç, Ğ, Ö, Ş, Ü. \textit{Eğik}, \textbf{kalın}, \texttt{eşaralıklı}, \textsf{düz yazı}.
+\begin{otherlanguage}{english}The quick brown fox.\end{otherlanguage}
+\section{Matematik ve tablo}
+\[ E = mc^2, \qquad \int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}, \qquad \alpha\beta\gamma \]
+\begin{table}[H]\centering
+\begin{tabular}{lr}\toprule Ad & Değer \\ \midrule Bir & 1 \\ İki & 2 \\ \bottomrule\end{tabular}
+\caption{Deneme tablosu}
+\end{table}
+\begin{itemize}\item Madde\end{itemize}
+\url{https://example.org}
+\end{document}

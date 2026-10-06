@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitapçevir</title>
+<!--
+  Kabuğun, yönetici ayağa kalkana kadar gösterdiği yerel sayfa (packaging/TASARIM.md B.4-3).
+  Durum yalnız kabuktan gelir: window.kabukDurumu({...}). Sayfa kendisi sayı üretmez;
+  yüzde ya da tahmin YOK. Geçen süre, kabuğun bildirdiği başlangıç anından gerçek saatle hesaplanır.
+  Renkler .streamlit/config.toml [theme]'den derle.sh ile yazılır (@…@ yer tutucuları).
+-->
+<style>
+  :root {
+    --zemin: @ZEMIN@;
+    --ikincil: @IKINCIL_ZEMIN@;
+    --metin: @METIN@;
+    --vurgu: @VURGU@;
+    --soluk: color-mix(in srgb, var(--metin) 55%, transparent);
+    --cizgi: color-mix(in srgb, var(--metin) 12%, transparent);
+    --hata: #f87171;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(180deg, var(--zemin) 0%, var(--ikincil) 100%);
+    color: var(--metin);
+    display: flex; align-items: center; justify-content: center;
+    -webkit-user-select: none; cursor: default;
+  }
+  main { width: min(560px, calc(100% - 48px)); }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .isaret {
+    width: 40px; height: 40px; border-radius: 11px; flex: none;
+    background: var(--vurgu);
+  }
+  h1 { font-size: 22px; font-weight: 650; margin: 0; letter-spacing: -0.01em; }
+  .alt { color: var(--soluk); font-size: 13px; margin-top: 2px; }
+  .kart {
+    background: color-mix(in srgb, var(--ikincil) 80%, transparent);
+    border: 1px solid var(--cizgi); border-radius: 12px; padding: 6px 18px;
+  }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; font-size: 14px; }
+  li + li { border-top: 1px solid var(--cizgi); }
+  .simge { width: 16px; flex: none; text-align: center; color: var(--soluk); }
+  .ad { flex: 1; }
+  .durum { color: var(--soluk); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  li[data-durum="tamam"] .simge { color: var(--vurgu); }
+  li[data-durum="suruyor"] .simge, li[data-durum="suruyor"] .durum { color: var(--metin); }
+  li[data-durum="hata"] .simge, li[data-durum="hata"] .durum { color: var(--hata); }
+  .not { margin-top: 16px; font-size: 13px; color: var(--soluk); line-height: 1.5; }
+  .hata {
+    margin-top: 16px; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5;
+    border: 1px solid color-mix(in srgb, var(--hata) 45%, transparent);
+    background: color-mix(in srgb, var(--hata) 10%, transparent);
+  }
+  .hata b { display: block; margin-bottom: 4px; }
+  .yol { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--soluk);
+         word-break: break-all; -webkit-user-select: text; cursor: text; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="isaret" aria-hidden="true"></div>
+    <div>
+      <h1>Kitapçevir</h1>
+      <div class="alt" id="alt">Hazırlanıyor</div>
+    </div>
+  </header>
+
+  <div class="kart">
+    <ol id="adimlar">
+      <li data-kimlik="calisma_zamani" data-durum="bekliyor"><span class="simge">·</span><span class="ad">Python çalışma zamanı</span><span class="durum">bekliyor</span></li>
+      <li data-kimlik="uygulama_kodu" data-durum="bekliyor"><span class="simge">·</span><span class="ad">Uygulama kodu</span><span class="durum">bekliyor</span></li>
+      <li data-kimlik="yonetici" data-durum="bekliyor"><span class="simge">·</span><span class="ad">Kurulum yöneticisi</span><span class="durum">bekliyor</span></li>
+    </ol>
+  </div>
+
+  <div class="not" id="tasinmamis" hidden>Kitapçevir'i Uygulamalar klasörüne taşıyıp oradan açman önerilir.</div>
+
+  <div class="hata" id="hata" hidden>
+    <b id="hata-baslik">Bir sorun çıktı</b>
+    <div id="hata-ileti"></div>
+    <div class="yol" id="hata-gunluk"></div>
+  </div>
+
+  <div class="not" id="surum"></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var SIMGE = { bekliyor: "·", suruyor: "…", tamam: "✓", hata: "✕" };
+  var durum = null;
+  var sayac = null;
+
+  function saniye(x) {
+    var basamak = x < 1 ? 2 : 1;
+    return x.toLocaleString("tr-TR", { minimumFractionDigits: basamak, maximumFractionDigits: basamak }) + " sn";
+  }
+
+  function gecen(a) {
+    if (typeof a.baslangic_ms !== "number") return "";
+    var s = Math.floor((Date.now() - a.baslangic_ms) / 1000);
+    return s >= 1 ? " " + s + " sn" : "";
+  }
+
+  function durumMetni(a) {
+    switch (a.durum) {
+      case "suruyor":
+        if (a.not === "aciliyor") return "paketten açılıyor…" + gecen(a);
+        if (a.not === "baslatiliyor") return "başlatılıyor…" + gecen(a);
+        return "denetleniyor…";
+      case "tamam":
+        if (a.not === "zaten_hazir") return "hazır";
+        if (a.not === "acildi" && typeof a.sure_sn === "number") return "paketten açıldı (" + saniye(a.sure_sn) + ")";
+        if (typeof a.sure_sn === "number") return "hazır (" + saniye(a.sure_sn) + ")";
+        return "hazır";
+      case "hata":
+        return "hata";
+      default:
+        return "bekliyor";
+    }
+  }
+
+  function ciz() {
+    if (!durum) return;
+    var suruyor = false;
+    (durum.adimlar || []).forEach(function (a) {
+      var li = document.querySelector('li[data-kimlik="' + a.kimlik + '"]');
+      if (!li) return;
+      li.dataset.durum = a.durum;
+      li.querySelector(".simge").textContent = SIMGE[a.durum] || SIMGE.bekliyor;
+      li.querySelector(".durum").textContent = durumMetni(a);
+      if (a.durum === "suruyor") suruyor = true;
+    });
+
+    var alt = document.getElementById("alt");
+    if (durum.kapaniyor) alt.textContent = "Kapatılıyor";
+    else if (durum.hata) alt.textContent = durum.hata.tur === "kilit" ? "Zaten çalışıyor" : "Bir sorun çıktı";
+    else alt.textContent = "Hazırlanıyor";
+
+    document.getElementById("tasinmamis").hidden = !durum.tasinmamis;
+
+    var h = document.getElementById("hata");
+    if (durum.hata) {
+      document.getElementById("hata-baslik").textContent =
+        durum.hata.tur === "kilit" ? "Kitapçevir zaten çalışıyor" : "Kitapçevir hazırlanamadı";
+      document.getElementById("hata-ileti").textContent = durum.hata.ileti || "";
+      document.getElementById("hata-gunluk").textContent = durum.gunluk ? "Günlük: " + durum.gunluk : "";
+      h.hidden = false;
+    } else {
+      h.hidden = true;
+    }
+
+    document.getElementById("surum").textContent = durum.surum ? "Sürüm " + durum.surum : "";
+
+    // Geçen süre gerçek saatle, yalnız süren adım varken saniyede bir yenilenir.
+    if (suruyor && !sayac) sayac = setInterval(ciz, 1000);
+    if (!suruyor && sayac) { clearInterval(sayac); sayac = null; }
+  }
+
+  window.kabukDurumu = function (d) { durum = d; ciz(); };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# PDF desteği: Marker + torch (+ surya, transformers). Marker modelleri ayrıca iner (~/Library/Caches/datalab).
+marker-pdf==1.10.2
+surya-ocr==0.17.1
+torch==2.10.0
+transformers==4.57.6

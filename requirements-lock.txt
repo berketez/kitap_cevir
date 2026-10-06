@@ -1,0 +1,9 @@
+# Kitapçevir kilidi: tek kaynak packaging/requirements/*.txt (sürüm + SHA-256 özetli,
+# tam kapanış; üretici packaging/requirements/derle_kilit.sh).
+#
+# Eskiden burada duran conda/Anaconda "pip freeze" dökümü (348 yerel dosya adresli satır,
+# başka makinede kurulamıyordu; sürümleri de bayattı) kaldırıldı
+# (packaging/TASARIM.md F6; lisans raporu R9). Kurulum ve açıklama: requirements.txt
+#   ./venv/bin/pip install --no-deps -r requirements-lock.txt
+
+-r requirements.txt

@@ -1,0 +1,558 @@
+%% turkish_book.tex -- XeLaTeX preamble for Turkish book typesetting
+%% This file is used as a template by template_engine.py.
+%% Placeholders: DOCUMENT_CLASS, PAPER_SIZE, FONT_SIZE,
+%%               FONT_MAIN, FONT_SANS, FONT_MONO, FONT_MATH, CONTENT
+
+\documentclass[{{PAPER_SIZE}},{{FONT_SIZE}},openany,oneside]{{{DOCUMENT_CLASS}}}
+
+%% --- Encoding & Language ---------------------------------------------------
+\usepackage{polyglossia}
+\setmainlanguage{turkish}
+\setotherlanguage{english}
+
+%% --- Fonts (fontspec -- XeLaTeX only) --------------------------------------
+\usepackage{fontspec}
+% Once config/layout'un istedigi font denenir ({{FONT_*}} placeholder'lari);
+% sistemde yoksa Latin Modern DOSYA adiyla yuklenir (kpathsea texmf agacinda
+% bulur; macOS texlive XeTeX'in fontconfig/CoreText isim-lookup sorununu
+% baypas eder). 2026-07-17 (#53): placeholder'lar baslikta belgelenmis ama
+% govdede hic kullanilmiyordu — layout font eslemesi sessizce cope gidiyordu.
+% G3b (2026-10-05; F3 notu, mt okuma MT-46): macOS'un STIX Two Text'i tek
+% dosyalık değişken yazı tipidir (STIXTwoText.ttf); XeTeX adla yüklerken
+% kalın kesimi bulamıyordu ('Could not resolve font "STIX Two Text/B"') ve
+% bütün belgede \textbf düz basılıyordu. İstenen STIX Two Text ise ve TeX
+% Live'ın dört ayrı OTF dosyası varsa yazı tipi dosya adıyla yüklenir (aynı
+% tasarım, gerçek kalın/eğik). Başka yazı tipinde kalın kesim bulunamadıysa
+% (fontspec b/n biçimini tanımlamadıysa) sahte kalın kullanılır
+% (FakeBold=2: fontspec belgesindeki ölçülü kalınlaştırma katsayısı).
+% fontspec'in AutoFakeBold seçeneği KULLANILMAZ: açık BoldFont verilmeyen
+% her yazı tipinde gerçek kalını da sahtesiyle değiştiriyordu (ölçüldü:
+% Helvetica Neue kalın -> "embolden=2", kalın eğik -> düz eğik).
+% Metin Latin Modern ise (adıyla istendi ya da istenen yazı tipi yok)
+% matematik de Latin Modern Math olur (aşağıda).
+\makeatletter
+\def\kc@mainreq{{{FONT_MAIN}}}
+\def\kc@stixtextname{STIX Two Text}
+\def\kc@lmtextname{Latin Modern Roman}
+\newif\ifkc@lmmain
+\newif\ifkc@stixfiles
+\ifx\kc@mainreq\kc@stixtextname
+  \IfFontExistsTF{STIXTwoText-Bold.otf}{\kc@stixfilestrue}{}%
+\fi
+\ifx\kc@mainreq\kc@lmtextname \kc@lmmaintrue \fi
+\ifkc@stixfiles
+  \setmainfont{STIXTwoText}[
+    Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
+    BoldFont=*-Bold, BoldItalicFont=*-BoldItalic]%
+\else
+  \IfFontExistsTF{{{FONT_MAIN}}}{%
+    \setmainfont{{{FONT_MAIN}}}%
+    \ifcsname TU/\rmdefault/b/n\endcsname\else
+      \setmainfont{{{FONT_MAIN}}}[
+        BoldFont={{{FONT_MAIN}}}, BoldFeatures={FakeBold=2}]%
+    \fi
+  }{%
+    \kc@lmmaintrue
+    \setmainfont{lmroman10-regular.otf}[
+      BoldFont=lmroman10-bold.otf,
+      ItalicFont=lmroman10-italic.otf,
+      BoldItalicFont=lmroman10-bolditalic.otf]%
+  }
+\fi
+\makeatother
+\IfFontExistsTF{{{FONT_SANS}}}{%
+  \setsansfont{{{FONT_SANS}}}%
+}{%
+  \setsansfont{lmsans10-regular.otf}[
+    BoldFont=lmsans10-bold.otf,
+    ItalicFont=lmsans10-oblique.otf,
+    BoldItalicFont=lmsans10-boldoblique.otf]%
+}
+% G3b (2026-10-05; elle onarım kuralı genelleştirildi): eş aralıklı yazıda
+% sözcük bölünmez (tire yok) ve sözcük arası boşluk esnemez (makine
+% dizgileri, belirteçler, kod). fontspec eş aralıklı yazı tipini tanıyınca
+% bunu zaten yapıyor (ölçüldü: Menlo'da \hyphenchar=-1, \fontdimen3/4=0);
+% tanınmayan yazı tipi için açıkça verilir.
+\IfFontExistsTF{{{FONT_MONO}}}{%
+  \setmonofont{{{FONT_MONO}}}[HyphenChar=None,WordSpace={1,0,0}]%
+}{%
+  \setmonofont{lmmono10-regular.otf}[
+    BoldFont=lmmonolt10-bold.otf,
+    ItalicFont=lmmono10-italic.otf,
+    BoldItalicFont=lmmonolt10-boldoblique.otf,
+    HyphenChar=None,WordSpace={1,0,0}]%
+}
+
+%% --- Mathematics -----------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+% G3b (2026-10-05; mt okuma MT-46): Latin Modern metin + STIX Two Math
+% formül uyuşmuyordu (satır içi m, F metinden farklı). Metin Latin Modern
+% ise ve matematik yazı tipi varsayılan (STIX Two Math) bırakıldıysa
+% Latin Modern Math kullanılır; açıkça başka matematik yazı tipi
+% istendiyse ona dokunulmaz.
+\makeatletter
+\def\kc@mathreq{{{FONT_MATH}}}
+\def\kc@stixmathname{STIX Two Math}
+\ifkc@lmmain\ifx\kc@mathreq\kc@stixmathname
+  \def\kc@mathreq{latinmodern-math.otf}%
+\fi\fi
+\expandafter\IfFontExistsTF\expandafter{\kc@mathreq}{%
+  \expandafter\setmathfont\expandafter{\kc@mathreq}%
+}{%
+  \setmathfont{latinmodern-math.otf}%
+}
+\makeatother
+% Marker bold vektörler için \bm üretir; bm paketi unicode-math ile çakışır.
+% \bm -> \symbf (unicode-math native bold) alias'ı (math kitapları için):
+\newcommand{\bm}[1]{\symbf{#1}}
+
+%% --- Glif yedekleri ve ondalık virgül (R4/R15, 2026-09-25) -------------------
+\makeatletter
+% (1) Matematikte harf: unicode-math'in eşlemediği harfler (Türkçe ç ğ ş ö ü
+% İ, öteki Latin harfleri, Kiril) eski cmmi yazı tipine düşüp BASILMIYORDU
+% ("Missing character ... in font cmmi10/cmmi7": p_н -> "p"). Yalnız eşlenmemiş
+% olanlar (aile 1) metin yazı tipinden alınır: Latin italik (matematik
+% değişkeni gibi), Kiril dik (Rus dizgisinde Kiril indis diktir). \mathrm{}
+% içinde dik harf çıkar (sınıf 7). 2026-09-28: aralık değiştirici harfler
+% (ˆ ˇ ʹ; Marker şapkayı harfin yanına ayrı yazıyor: "gˆ_{1}") ve Latin
+% genişletilmiş ek (ẋ ẍ) de aynı yoldan; İngilizce bir test kitabında cmmi7'de
+% eksik ˆ görülmüştü.
+\IfFontExistsTF{STIXTwoText-Regular.otf}{%
+  \newfontfamily\kc@mathletterfont{STIXTwoText}[
+    Extension=.otf, UprightFont=*-Regular, ItalicFont=*-Italic,
+    BoldFont=*-Bold, BoldItalicFont=*-BoldItalic, NFSSFamily=kcmathlet]%
+  \def\kc@mathletfam{kcmathlet}%
+}{%
+  \edef\kc@mathletfam{\rmdefault}%
+}
+\DeclareSymbolFont{kcmathlatin}{TU}{\kc@mathletfam}{m}{it}
+\SetSymbolFont{kcmathlatin}{bold}{TU}{\kc@mathletfam}{b}{it}
+\DeclareSymbolFont{kcmathcyr}{TU}{\kc@mathletfam}{m}{n}
+\SetSymbolFont{kcmathcyr}{bold}{TU}{\kc@mathletfam}{b}{n}
+\newcount\kc@cp
+\newcount\kc@fam
+\def\kc@mathletters#1#2#3{%
+  \kc@cp=#1\relax
+  \loop
+    \kc@fam=\Umathcodenum\kc@cp
+    \divide\kc@fam by "1000000\relax
+    \ifnum\kc@fam=\@ne
+      \Umathcode\kc@cp=7 #3 \kc@cp
+    \fi
+  \ifnum\kc@cp<#2\relax \advance\kc@cp\@ne \repeat}
+\AtBeginDocument{%
+  \kc@mathletters{"00C0}{"024F}{\symkcmathlatin}%
+  \kc@mathletters{"02B0}{"02FF}{\symkcmathlatin}% aralık değiştirici harfler
+  \kc@mathletters{"1E00}{"1EFF}{\symkcmathlatin}% Latin genişletilmiş ek
+  \kc@mathletters{"0400}{"052F}{\symkcmathcyr}%
+}
+% (2) Metinde yedek yazı tipi: ana yazı tipinde OLMAYAN glifler (ör. STIX Two
+% Text'te ◦ U+25E6, √, Yunanca ἡ; Latin Modern'da Yunanca/Kiril, ∆, ≤)
+% yedek yazı tipinden basılır. Hangi harfin eksik olduğu belge başında
+% \iffontchar ile ölçülür; ana yazı tipinde olan hiçbir harfe dokunulmaz.
+% XeTeX harf sınıfı geçişleri yalnız metin kipinde çalışır, matematik
+% etkilenmez; \text{} içindeki Kiril de buradan yararlanır.
+\IfFontExistsTF{FreeSerif.otf}{%
+  \newfontfamily\kc@fallbackfamily{FreeSerif}[
+    Extension=.otf, UprightFont=*, BoldFont=*Bold, ItalicFont=*Italic,
+    BoldItalicFont=*BoldItalic, Scale=MatchLowercase]%
+  \font\kc@fallbackprobe="[FreeSerif.otf]" at 10pt\relax
+  \chardef\kc@havefallback=1
+}{%
+  \IfFontExistsTF{DejaVuSerif.ttf}{%
+    \newfontfamily\kc@fallbackfamily{DejaVuSerif}[
+      Extension=.ttf, UprightFont=*, BoldFont=*-Bold, ItalicFont=*-Italic,
+      BoldItalicFont=*-BoldItalic, Scale=MatchLowercase]%
+    \font\kc@fallbackprobe="[DejaVuSerif.ttf]" at 10pt\relax
+    \chardef\kc@havefallback=1
+  }{\chardef\kc@havefallback=0 }%
+}
+\newXeTeXintercharclass\kc@fallbackclass
+\def\kc@fallbacktoks#1{%
+  \XeTeXinterchartoks#1\kc@fallbackclass=\expandafter{%
+    \the\XeTeXinterchartoks#1\z@\begingroup\kc@fallbackfamily}%
+  \XeTeXinterchartoks\kc@fallbackclass#1=\expandafter{%
+    \expandafter\endgroup\the\XeTeXinterchartoks\z@#1}}
+\def\kc@fallbackscan#1#2{%
+  \kc@cp=#1\relax
+  \loop
+    \iffontchar\font\kc@cp\else
+      \iffontchar\kc@fallbackprobe\kc@cp
+        \global\XeTeXcharclass\kc@cp=\kc@fallbackclass
+      \fi
+    \fi
+  \ifnum\kc@cp<#2\relax \advance\kc@cp\@ne \repeat}
+% polyglossia dili (ve Türkçe noktalama geçişlerini) begindocument/end'de
+% kurar; yedek sınıfın geçişleri onun ARDINDAN kopyalanmalı.
+\AddToHook{begindocument/end}[kitapcevir/fallback]{%
+  \ifnum\kc@havefallback=\@ne
+    \begingroup
+      \normalfont
+      \kc@fallbackscan{"0370}{"03FF}% Yunanca
+      \kc@fallbackscan{"0400}{"052F}% Kiril
+      \kc@fallbackscan{"1F00}{"1FFF}% Yunanca (çok tonlu)
+      \kc@fallbackscan{"2010}{"205E}% genel noktalama (′ ″ ‰)
+      \kc@fallbackscan{"2070}{"20CF}% üst/alt simge, para birimi
+      \kc@fallbackscan{"2100}{"23FF}% harf benzeri, sayı biçimi, ok, matematik
+      \kc@fallbackscan{"25A0}{"25FF}% geometrik şekil (◦)
+      \kc@fallbackscan{"2A00}{"2AFF}% ek matematik işlemleri
+      \kc@fallbackscan{"1D400}{"1D7FF}% matematik harf ve rakamları
+    \endgroup
+    % Her sınıftan (4095 = sınır) yedek sınıfa geçişte grup açılır, çıkışta
+    % kapanır; aradaki harfler yedek yazı tipiyle dizilir. Yedek sınıf öteki
+    % sınıflara karşı sınıf 0 gibi davranır (ör. Türkçe "!" ":" "=" önü
+    % boşluk kuralı): sınıf 0'ın geçiş dizgisi grubun dışında korunur.
+    \kc@cp=\z@
+    \loop
+      \kc@fallbacktoks\kc@cp
+    \ifnum\kc@cp<\numexpr\kc@fallbackclass-\@ne\relax \advance\kc@cp\@ne \repeat
+    \kc@fallbacktoks{4095}%
+    \XeTeXinterchartokenstate=\@ne
+  \fi
+}
+\DeclareHookRule{begindocument/end}{kitapcevir/fallback}{after}{polyglossia}
+% (2b) Simge ve emoji yedeği (G3b, 2026-10-05; elle onarım kuralı genelleştirildi):
+% ✅ (U+2705), ❌ (U+274C), ✓, ★ gibi işaretler ne ana yazı tipinde ne
+% birinci yedekte (FreeSerif ailesi) her kesimde var; PDF'te boş kalıyordu
+% ("Missing character"; bir test raporunun tablosunda 7 kez; eski şablonda bu deneme
+% dizisinin 8 simgesi). Çeşitli simgeler, dingbat ve emoji bloklarında ana
+% yazı tipinde olmayan ve birinci yedeğe atanmamış harfler önce TeX Live'daki
+% tek renkli Noto Emoji'den, onda da yoksa FreeSerif'in DÜZ kesiminden
+% basılır. İki aile de tek kesimlidir: kalın/eğik bağlamda NFSS düz kesimi
+% kullanır, simge yine basılır (FreeSerif'in kalın/eğik kesimlerinde ✓ ✗ ★
+% yok, ölçüldü). Yazı tipi yoksa ilgili adım atlanır.
+\IfFontExistsTF{NotoEmoji-Regular.ttf}{%
+  \newfontfamily\kc@emojifamily{NotoEmoji-Regular.ttf}%
+  \font\kc@emojiprobe="[NotoEmoji-Regular.ttf]" at 10pt\relax
+  \chardef\kc@haveemoji=1
+}{\chardef\kc@haveemoji=0 }
+\IfFontExistsTF{FreeSerif.otf}{%
+  \newfontfamily\kc@symbolfamily{FreeSerif.otf}[Scale=MatchLowercase]%
+  \font\kc@symbolprobe="[FreeSerif.otf]" at 10pt\relax
+  \chardef\kc@havesymbol=1
+}{\chardef\kc@havesymbol=0 }
+\newXeTeXintercharclass\kc@emojiclass
+\newXeTeXintercharclass\kc@symbolclass
+% #1: kaynak sınıf, #2: yedek sınıf, #3: yedek aile (geçişler birinci
+% yedekteki gibi; sınıf 0'ın geçiş dizgisi grubun dışında korunur).
+\def\kc@classtoks#1#2#3{%
+  \XeTeXinterchartoks#1#2=\expandafter{%
+    \the\XeTeXinterchartoks#1\z@\begingroup#3}%
+  \XeTeXinterchartoks#2#1=\expandafter{%
+    \expandafter\endgroup\the\XeTeXinterchartoks\z@#1}}
+% #1–#2: harf aralığı, #3: yoklama yazı tipi, #4: sınıf. Ana yazı tipinde
+% olmayan ve henüz bir yedeğe atanmamış (sınıf 0) harfler.
+\def\kc@classscan#1#2#3#4{%
+  \kc@cp=#1\relax
+  \loop
+    \iffontchar\font\kc@cp\else
+      \ifnum\XeTeXcharclass\kc@cp=\z@
+        \iffontchar#3\kc@cp
+          \global\XeTeXcharclass\kc@cp=#4\relax
+        \fi
+      \fi
+    \fi
+  \ifnum\kc@cp<#2\relax \advance\kc@cp\@ne \repeat}
+% #1: sınıf, #2: aile — her sınıftan (ve 4095 sınırından) geçiş.
+\def\kc@classloop#1#2{%
+  \kc@cp=\z@
+  \loop
+    \kc@classtoks\kc@cp#1#2%
+  \ifnum\kc@cp<\numexpr#1-\@ne\relax \advance\kc@cp\@ne \repeat
+  \kc@classtoks{4095}#1#2}
+\AddToHook{begindocument/end}[kitapcevir/simge]{%
+  \begingroup
+    \normalfont
+    \ifnum\kc@haveemoji=\@ne
+      \kc@classscan{"2600}{"27BF}\kc@emojiprobe\kc@emojiclass% simge, dingbat
+      \kc@classscan{"2B00}{"2BFF}\kc@emojiprobe\kc@emojiclass% simge ve oklar
+      \kc@classscan{"1F300}{"1FAFF}\kc@emojiprobe\kc@emojiclass% emoji
+    \fi
+    \ifnum\kc@havesymbol=\@ne
+      \kc@classscan{"2600}{"27BF}\kc@symbolprobe\kc@symbolclass
+      \kc@classscan{"2B00}{"2BFF}\kc@symbolprobe\kc@symbolclass
+    \fi
+  \endgroup
+  \ifnum\kc@haveemoji=\@ne \kc@classloop\kc@emojiclass\kc@emojifamily \fi
+  \ifnum\kc@havesymbol=\@ne \kc@classloop\kc@symbolclass\kc@symbolfamily \fi
+  \XeTeXinterchartokenstate=\@ne
+}
+\DeclareHookRule{begindocument/end}{kitapcevir/simge}{after}{kitapcevir/fallback}
+% (3) Ondalık virgül: matematikte virgülden hemen sonra rakam geliyorsa
+% virgül noktalama değil sayı parçasıdır ("998,2" -> "998, 2" olmaz).
+% icomma paketinin unicode-math uyumlu, yalnız rakama bakan eşdeğeri:
+% "f(x,y)" ve "1, 2" eskisi gibi kalır.
+\newif\ifkc@digit
+\def\kc@smartcomma{%
+  \kc@digitfalse
+  \ifx\kc@nexttoken0\kc@digittrue\fi \ifx\kc@nexttoken1\kc@digittrue\fi
+  \ifx\kc@nexttoken2\kc@digittrue\fi \ifx\kc@nexttoken3\kc@digittrue\fi
+  \ifx\kc@nexttoken4\kc@digittrue\fi \ifx\kc@nexttoken5\kc@digittrue\fi
+  \ifx\kc@nexttoken6\kc@digittrue\fi \ifx\kc@nexttoken7\kc@digittrue\fi
+  \ifx\kc@nexttoken8\kc@digittrue\fi \ifx\kc@nexttoken9\kc@digittrue\fi
+  \ifkc@digit\mathord\fi\kc@mathcomma}
+{\catcode`\,=\active
+  \gdef,{\futurelet\kc@nexttoken\kc@smartcomma}}
+\AtBeginDocument{%
+  \Umathcharnumdef\kc@mathcomma=\Umathcodenum`\,\relax
+  \mathcode`\,="8000\relax
+}
+\makeatother
+
+%% --- Graphics & Figures ----------------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{float}
+
+%% --- Tables ----------------------------------------------------------------
+\usepackage{booktabs}
+% G3b (2026-10-05; mt okuma MT-25): tablonun dışındaki altyazı
+% paragrafı tabloyla aynı kutuya alınınca (sanitizer, Phase 6 birimi)
+% arada yalnız \lineskip (1 pt) kalıyor, altyazı üst/alt çizgiye
+% değiyordu (ölçüldü: 1,4 pt). booktabs'ın çizgi dışı payları (varsayılan
+% 0 pt) açılır: çizgi ile bitişik satır arasında en az 4 pt + \lineskip
+% (booktabs \belowrulesep ~0,65ex ~3 pt'tan biraz geniş; gerçek \caption'lı
+% tabloda \abovecaptionskip'e eklenir).
+\setlength{\abovetopsep}{4pt}
+\setlength{\belowbottomsep}{4pt}
+\usepackage{longtable}
+\usepackage{array}
+% V1 denetimi (2026-09-29): sayfadan taşan tablo. Sanitizer (yalnız
+% derlenecek tam belge) doğal genişliği metin genişliğini aşan tabloyu
+% kcfit ortamına alır: tablo \linewidth'ten gerçekten genişse sığacak kadar
+% küçültülür (hiç büyütülmez); eskiden sağdaki sütunlar sayfa dışında
+% kalıp görünmüyordu.
+\newsavebox{\kctablebox}
+\newenvironment{kcfit}{\begin{lrbox}{\kctablebox}}{\end{lrbox}%
+  \ifdim\wd\kctablebox>\linewidth
+    \resizebox{\linewidth}{!}{\usebox{\kctablebox}}%
+  \else\usebox{\kctablebox}\fi}
+
+%% --- Code listings ---------------------------------------------------------
+% L-1 (2026-09-29): listings paketi XeLaTeX'te Latin-1 dışı harfleri (ğ ş ı İ
+% Ğ Ş) yanlış diziyor ("değiştirebilir" -> "ğşdeitirebilir"; literate,
+% extendedchars, alsoletter çözmüyor). Çevrilen kod yorumları ve alıntı
+% blokları bozuk basılıyordu. lstlisting ortamı artık fvextra'nın Verbatim'i
+% ile dizilir (UTF-8 harfleri doğru). listings yalnız \lstinline / \lstset
+% için yüklü kalır. Seçenekli kullanım (\begin{lstlisting}[language=Python])
+% derleme hatası vermez: Verbatim karşılığı olmayan listings seçenekleri yok
+% sayılır, caption/title çerçeve başlığı olarak basılır (kayıpsız), label
+% "Kod N" numarasına bağlanır, frame=tb/trbl eşdeğerine çevrilir.
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    tabsize=4,
+}
+\usepackage{fvextra}
+\makeatletter
+\newcounter{kclisting}
+\providecommand\kclistingname{Kod}
+\newif\ifkc@lststepped
+\let\kc@lsttext\@empty
+\def\kc@lststep{\ifkc@lststepped\else
+  \refstepcounter{kclisting}\kc@lststeppedtrue\fi}
+% Çerçeve başlığı: numaralıysa (caption ya da label) "Kod N[: metin]",
+% değilse (yalnız title) metnin kendisi.
+\def\kc@lstsetlabel{\ifkc@lststepped
+    \ifx\kc@lsttext\@empty\kc@FVlabel{\kclistingname~\thekclisting}%
+    \else\kc@FVlabel{\kclistingname~\thekclisting: \kc@lsttext}\fi
+  \else\ifx\kc@lsttext\@empty\else\kc@FVlabel{\kc@lsttext}\fi\fi}
+% Verbatim'de karşılığı olmayan listings seçenekleri: yok sayılır. FV'de
+% zaten tanımlı olanlara (numbers, tabsize, firstnumber, breaklines, ...)
+% dokunulmaz.
+\def\kc@lstignore#1{\@ifundefined{KV@FV@#1}{\define@key{FV}{#1}[]{}}{}}
+\@for\kc@key:=language,style,keywordstyle,commentstyle,stringstyle,%
+identifierstyle,numberstyle,showstringspaces,captionpos,escapeinside,%
+escapechar,escapebegin,escapeend,morekeywords,otherkeywords,deletekeywords,%
+keywords,ndkeywords,sensitive,keepspaces,columns,flexiblecolumns,%
+extendedchars,inputencoding,literate,backgroundcolor,emph,emphstyle,float,%
+floatplacement,aboveskip,belowskip,lineskip,linewidth,breakatwhitespace,%
+breakautoindent,breakindent,prebreak,postbreak,showlines,alsoletter,%
+alsodigit,alsoother,moredelim,morecomment,morestring,frameround,%
+framexleftmargin,framexrightmargin,framextopmargin,framexbottommargin,%
+belowcaptionskip,abovecaptionskip,name,texcl,tabsize,numberblanklines,%
+numberfirstline,upquote,mathescape,showspaces,showtabs,gobble\do{%
+  \expandafter\kc@lstignore\expandafter{\kc@key}}
+\let\kc@FVlabel\KV@FV@label
+\let\kc@FVframe\KV@FV@frame
+\def\kc@lstcap#1{\@ifnextchar[{\kc@lstcap@ii}{\kc@lstcap@ii[]}#1\@nil}
+\def\kc@lstcap@ii[#1]#2\@nil{\kc@lststep\def\kc@lsttext{#2}\kc@lstsetlabel}
+\def\kc@lstframe#1{\def\@tempa{#1}\def\@tempb{tb}%
+  \ifx\@tempa\@tempb\kc@FVframe{lines}\else
+  \def\@tempb{trbl}\ifx\@tempa\@tempb\kc@FVframe{single}\else
+  \def\@tempb{shadowbox}\ifx\@tempa\@tempb\kc@FVframe{single}\else
+  \kc@FVframe{#1}\fi\fi\fi}
+% Yalnız lstlisting içinde (ortamın grubunda, varsayılan seçeneklerden sonra
+% gelen kullanıcı seçenekleri için) listings anlamı: label/caption/title/
+% frame/basicstyle.
+\define@key{FV}{kclst}[]{%
+  \kc@lststeppedfalse\let\kc@lsttext\@empty
+  \define@key{FV}{label}{\kc@lststep\label{##1}\kc@lstsetlabel}%
+  \define@key{FV}{caption}{\kc@lstcap{##1}}%
+  \define@key{FV}{title}{\def\kc@lsttext{##1}\kc@lstsetlabel}%
+  \define@key{FV}{frame}{\kc@lstframe{##1}}%
+  \define@key{FV}{basicstyle}{\fvset{formatcom=##1}}}
+\renewcommand\theFancyVerbLine{\tiny\arabic{FancyVerbLine}}
+\let\lstlisting\relax\let\endlstlisting\relax
+% V1 denetimi (2026-09-29): breakanywhere — fvextra breaklines yalnız
+% boşlukta kırar; boşluksuz uzun belirteç (URL, düzenli ifade) sayfa
+% kenarından taşıp kesiliyordu. listings breaklines gibi gerekince her
+% yerde kırar (boşluk yine önceliklidir).
+\DefineVerbatimEnvironment{lstlisting}{Verbatim}{kclst,breaklines=true,breakanywhere=true,%
+  fontsize=\small,frame=single,numbers=left,tabsize=4}
+\makeatother
+
+%% --- Hyperlinks & Colors ---------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+\usepackage[
+    colorlinks=true,
+    linkcolor=NavyBlue,
+    citecolor=OliveGreen,
+    urlcolor=BrickRed,
+]{hyperref}
+% Uzun URL'ler dar metin sutununda margin disina tasiyor; xurl her yerden
+% kirilmasini saglar. emergencystretch son care satir esnetmesi. (Yol A, 2026-06-19)
+\usepackage{xurl}
+% G3b (2026-10-05): xurl harfler arasına esneyen boşluk koyar (\Urlmuskip =
+% 0mu plus 1mu); gevşek satırda URL harf harf açılıyordu (ölçüldü: bir test
+% kitabında "h t t p s : / / w w w ..."). Kırılma noktaları kalır, yalnız esneme
+% kalkar: satırın esnemesi sözcük aralarına düşer.
+\Urlmuskip=0mu\relax
+% G3b (2026-10-05): 3em -> 6em. Büyük harfle başlayan sözcük artık
+% bölünmediği için (\uchyph=0, aşağıda) dar satırdaki uzun özel ad
+% ("Wolkensteinberger") satırı taşırıyordu; son çare esnetmesi yalnız
+% başka türlü dizilemeyen paragrafa uygulanır. Ölçüldü: bir test kitabında
+% taşan satır 4 -> 3 (eski şablonla aynı), büyük bir İngilizce kitapta
+% 51 -> 31 (eski şablon 48).
+\emergencystretch=6em
+
+%% --- Misc ------------------------------------------------------------------
+% \sout (ustu cizili, Markdown ~~...~~) icin; normalem: \emph davranisi
+% bozulmasin (#52 — paket yuklu degildi, her ~~...~~ Undefined control
+% sequence uretiyordu).
+\usepackage[normalem]{ulem}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{geometry}
+{{GEOMETRY_BLOCK}}
+{{LINE_SPACING}}
+
+%% --- Tireleme: başlıklar ve özel adlar (G3b, 2026-10-05) -------------------
+% Elle onarılmış bir kitabın özel önsöz dosyasında doğrulanan genel kurallar
+% şablona alındı (kitaba özgü \hyphenation listesi kitapta kalır).
+\makeatletter
+% (1) Başlıklarda sözcük bölünmez ("yapılandı-rılması"). Ölçüler
+% book sınıfındakiyle aynı; yalnız \raggedright\hyphenpenalty\@M eklendi.
+% \paragraph ve \subparagraph başlığı ayrı satırda durur (Markdown
+% başlığı kendi satırındadır; book sınıfı ardından gelen paragrafa
+% yapıştırıyordu). Kitaba özel önsöz bunları yine ezebilir (sonra gelir).
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}{2.3ex \@plus.2ex}%
+  {\normalfont\Large\bfseries\raggedright\hyphenpenalty\@M}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}%
+  {\normalfont\large\bfseries\raggedright\hyphenpenalty\@M}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\raggedright\hyphenpenalty\@M}}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}{1ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\raggedright\hyphenpenalty\@M}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}{1ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\raggedright\hyphenpenalty\@M}}
+% Bölüm başlığı (\chapter, \chapter*): book sınıfı zaten \raggedright;
+% bölünme de kapatılır.
+\@ifundefined{@makechapterhead}{}{%
+  \let\kc@makechapterhead\@makechapterhead
+  \def\@makechapterhead#1{\begingroup\hyphenpenalty\@M
+    \kc@makechapterhead{#1}\endgroup}%
+  \let\kc@makeschapterhead\@makeschapterhead
+  \def\@makeschapterhead#1{\begingroup\hyphenpenalty\@M
+    \kc@makeschapterhead{#1}\endgroup}}
+\makeatother
+% (2) Büyük harfle başlayan sözcük satır sonunda bölünmez (\uchyph=0):
+% Türkçe heceleme kalıpları yabancı özel adları ve marka/belirteç adlarını
+% yanlış bölüyordu (ör. "Mar-kOne", "Data-Vault'u", "Nord-Quist",
+% "TOKEN-ONE"). Polyglossia dili begindocument/end'de kurduğu için onun
+% ardından verilir.
+\AddToHook{begindocument/end}[kitapcevir/bolme]{\uchyph=0\relax}
+\DeclareHookRule{begindocument/end}{kitapcevir/bolme}{after}{polyglossia}
+
+%% --- Ön/ana madde sayfa numarası (G3b, 2026-10-05) -------------------------
+% mt okuma MT-27 (2026-10-05): book sınıfında \mainmatter sayfa sayacını 1'e
+% çeker. Ana maddeye geçiş varsa şablon motoru ön sayfaları \frontmatter ile
+% roma rakamına alır (template_engine.py). Geçiş numaralı bölümlerden SONRA
+% geliyorsa (dönüştürücü geçişi yanlış yerde yaptı) numaralar ikinci kez
+% 1'den başlıyordu: o durumda \mainmatter yalnız sayfayı keser, sayfa
+% numarasını sıfırlamaz.
+\makeatletter
+\@ifundefined{mainmatter}{}{\@ifundefined{c@chapter}{}{%
+  \let\kc@mainmatter\mainmatter
+  \renewcommand\mainmatter{%
+    \ifnum\numexpr\c@chapter+\c@part\relax>\z@
+      \clearpage\@mainmattertrue
+    \else
+      \kc@mainmatter
+    \fi}}}
+\makeatother
+
+%% --- Çerçeveli kutu (E kulvarı, 2026-10-06; mt okuma MT-24) ---------------
+% Kaynak PDF'te çerçeve ya da renkli zemin içindeki yan metin ("Exkurs",
+% yasalar kutusu) dönüştürücüde \begin{kckutu} … \end{kckutu} olur
+% (latex_pipeline/kutu_onarim.py). Yalnız çekirdek LaTeX ve zaten yüklü
+% xcolor kullanılır: paketlenen hafif TeX'in (tectonic) ısıtma önbelleğine
+% yeni dosya gerekmez. İçerik önce kutu genişliğinde bir \vbox'ta dizilir.
+% Yüksekliği \kckutusiniri'ni (metin alanının yarısı) aşmıyorsa gri zeminli,
+% çerçeveli tek parça basılır (sayfaya sığmazsa sonraki sayfaya geçer);
+% aşıyorsa bölünemeyen kutu sayfadan taşacağı için içerik \unvbox ile akışa
+% döner (sayfalar arasında bölünür) ve yalnız üst/alt çizgiyle ayrılır:
+% metin hiçbir durumda kesilmez. Kutu başındaki başlığın üst boşluğu
+% minipage'deki gibi yutulur (\@minipagetrue). Kayan nesne, tablo, dipnot
+% ve bölüm başlığı içeren kutuyu dönüştürücü zaten basmaz.
+\definecolor{kckutucerceve}{gray}{0.45}
+\definecolor{kckutuzemin}{gray}{0.95}
+\newsavebox{\kckutubox}
+\newlength{\kckutusiniri}
+\makeatletter
+\newenvironment{kckutu}{%
+  \par\addvspace{\medskipamount}%
+  \setlength{\fboxsep}{6pt}\setlength{\fboxrule}{0.6pt}%
+  \setlength{\kckutusiniri}{0.5\textheight}%
+  \setbox\kckutubox\vbox\bgroup
+    \hsize\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax
+    \@parboxrestore
+    \@minipagetrue\everypar{\@minipagefalse\everypar{}}%
+    \setlength{\parskip}{0.5\baselineskip}%
+}{%
+  \par\egroup
+  \ifdim\dimexpr\ht\kckutubox+\dp\kckutubox\relax>\kckutusiniri
+    \noindent{\color{kckutucerceve}\rule{\linewidth}{\fboxrule}}\par
+    \nobreak\vskip\fboxsep
+    \unvbox\kckutubox\par
+    \vskip\fboxsep
+    \noindent{\color{kckutucerceve}\rule{\linewidth}{\fboxrule}}\par
+  \else
+    \noindent\fcolorbox{kckutucerceve}{kckutuzemin}{\usebox{\kckutubox}}\par
+  \fi
+  \addvspace{\medskipamount}%
+}
+\makeatother
+
+%% --- Custom commands (convenience) -----------------------------------------
+%% None yet -- add project-specific macros here.
+
+\begin{document}
+
+{{CONTENT}}
+
+\end{document}

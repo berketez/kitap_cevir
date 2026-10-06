@@ -1,0 +1,31 @@
+{
+  "description": "Çevrilmemesi gereken özel adlar ve terimler (kurum, bilimsel terim)",
+  "version": "1.0",
+  "terms": {
+    "Kinsey Institute": {
+      "tr": "Kinsey Institute",
+      "keep_original": true,
+      "note": "Kurum"
+    },
+    "Washington Post": {
+      "tr": "Washington Post",
+      "keep_original": true,
+      "note": "Kurum"
+    },
+    "Harvard": {
+      "tr": "Harvard",
+      "keep_original": true,
+      "note": "Universite"
+    },
+    "MIT": {
+      "tr": "MIT",
+      "keep_original": true,
+      "note": "Universite"
+    },
+    "serotonin": {
+      "tr": "serotonin",
+      "note": "Norotransmiter",
+      "keep_original": true
+    }
+  }
+}

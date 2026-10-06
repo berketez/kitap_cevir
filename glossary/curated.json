@@ -1,0 +1,818 @@
+{
+  "description": "Curated terminology - sadece önemli ve çok kelimeli terimler (WMT25 DuTerm yaklaşımı)",
+  "version": "2.0",
+  "strategy": "hard",
+  "notes": [
+    "Bu dosya elle seçilmiş, EN YÜKSEK ÖNCELİKLİ terimleri içerir",
+    "Tek kelimelik yaygın kelimeler (one, are, both, etc.) YOKTUR",
+    "Hard constraint: Bu terimler MUTLAKA doğru çevrilmeli",
+    "2026-03-02'de kalite değerlendirmesiyle güncellendi",
+    "Tek bir kitaba özgü terimler ve adlar 2026-10-05'te çıkarıldı; her kitabın terimleri kendi kitap sözlüğündedir (glossary_shared.tsv)"
+  ],
+  "terms": {
+    "pair bonding": {
+      "tr": "çift bağlanması",
+      "context": "Romantik bağlanma kapasitesi",
+      "priority": "medium"
+    },
+    "anterior cingulate cortex": {
+      "tr": "anterior singulat korteks",
+      "context": "Beyin anatomisi",
+      "priority": "high"
+    },
+    "prefrontal cortex": {
+      "tr": "prefrontal korteks",
+      "context": "Beyin anatomisi",
+      "priority": "high"
+    },
+    "limbic system": {
+      "tr": "limbik sistem",
+      "context": "Beyin anatomisi",
+      "priority": "high"
+    },
+    "machine learning": {
+      "tr": "makine öğrenimi",
+      "context": "Yapay zeka",
+      "priority": "high"
+    },
+    "artificial intelligence": {
+      "tr": "yapay zeka",
+      "context": "Teknoloji",
+      "priority": "high"
+    },
+    "deep learning": {
+      "tr": "derin öğrenme",
+      "context": "Yapay zeka",
+      "priority": "high"
+    },
+    "neural network": {
+      "tr": "sinir ağı",
+      "context": "Yapay zeka",
+      "priority": "high"
+    },
+    "natural language processing": {
+      "tr": "doğal dil işleme",
+      "context": "Yapay zeka",
+      "priority": "high"
+    },
+    "cognitive dissonance": {
+      "tr": "bilişsel çelişki",
+      "context": "Psikoloji",
+      "priority": "high"
+    },
+    "confirmation bias": {
+      "tr": "doğrulama yanlılığı",
+      "context": "Psikoloji",
+      "priority": "high"
+    },
+    "social proof": {
+      "tr": "sosyal kanıt",
+      "context": "Psikoloji/Sosyoloji",
+      "priority": "medium"
+    },
+    "supply and demand": {
+      "tr": "arz ve talep",
+      "context": "Ekonomi",
+      "priority": "high"
+    },
+    "opportunity cost": {
+      "tr": "fırsat maliyeti",
+      "context": "Ekonomi",
+      "priority": "medium"
+    },
+    "praxeology": {
+      "tr": "praxeology",
+      "keep_original": true,
+      "context": "İnsan eylemi çalışması - çevrilmemeli",
+      "priority": "medium"
+    },
+    "bias": {
+      "tr": "önyargı",
+      "domain": "ml",
+      "context": "ML/istatistik - bias parametresi, yanlılık",
+      "priority": "high"
+    },
+    "bias parameter": {
+      "tr": "önyargı parametresi",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "bias parameters": {
+      "tr": "önyargı parametreleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "bias term": {
+      "tr": "önyargı terimi",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "bias vector": {
+      "tr": "önyargı vektörü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "bias-variance tradeoff": {
+      "tr": "önyargı-varyans ödünleşimi",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "convolutional": {
+      "tr": "evrişimli",
+      "domain": "ml",
+      "context": "Evrişim (convolution) işlemine dayalı - ASLA evrimci değil",
+      "priority": "high"
+    },
+    "convolutional network": {
+      "tr": "evrişimli ağ",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "convolutional neural network": {
+      "tr": "evrişimli sinir ağı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "convolutional neural networks": {
+      "tr": "evrişimli sinir ağları",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "convolutional layer": {
+      "tr": "evrişimli katman",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "convolutional layers": {
+      "tr": "evrişimli katmanlar",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "dot product": {
+      "tr": "iç çarpım",
+      "domain": "math",
+      "context": "Vektörlerin iç çarpımı - nokta çarpımı değil",
+      "priority": "high"
+    },
+    "dot product attention": {
+      "tr": "iç çarpım dikkat mekanizması",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "scaled dot product attention": {
+      "tr": "ölçeklenmiş iç çarpım dikkat mekanizması",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "subsonic": {
+      "tr": "ses altı",
+      "domain": "physics",
+      "context": "Mach < 1 - ASLA supersonik değil",
+      "priority": "high",
+      "wrong_alternatives": [
+        "alt ses",
+        "alt ses hızı",
+        "alt ses frekansı",
+        "alt sonik"
+      ]
+    },
+    "subsonic flow": {
+      "tr": "ses altı akış",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "supersonic": {
+      "tr": "ses üstü",
+      "domain": "physics",
+      "context": "Mach > 1",
+      "priority": "high",
+      "wrong_alternatives": [
+        "üst ses",
+        "üst ses hızı",
+        "üst frekans",
+        "süpersonik"
+      ]
+    },
+    "supersonic flow": {
+      "tr": "ses üstü akış",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "transonic": {
+      "tr": "transonik",
+      "domain": "physics",
+      "context": "Mach ~ 1 civarı",
+      "priority": "high"
+    },
+    "transonic flow": {
+      "tr": "transonik akış",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "hypersonic": {
+      "tr": "hipersonik",
+      "domain": "physics",
+      "context": "Mach > 5",
+      "priority": "high"
+    },
+    "nozzle": {
+      "tr": "lüle",
+      "domain": "physics",
+      "context": "Mühendislik standardı - nozul değil, lüle",
+      "priority": "high",
+      "wrong_alternatives": [
+        "nozul",
+        "nozül",
+        "nozülü",
+        "nozulun",
+        "nozülün",
+        "nozulda",
+        "nozülde"
+      ]
+    },
+    "convergent-divergent nozzle": {
+      "tr": "yakınsak-ıraksak lüle",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "yakınsak-ıraksak nozül",
+        "yakınsak-ıraksak nozul"
+      ]
+    },
+    "converging-diverging nozzle": {
+      "tr": "yakınsak-ıraksak lüle",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "yakınsak-ıraksak nozül"
+      ]
+    },
+    "CD nozzle": {
+      "tr": "Yİ lülesi",
+      "domain": "physics",
+      "priority": "high",
+      "case_sensitive": true
+    },
+    "throat": {
+      "tr": "boğaz",
+      "domain": "physics",
+      "context": "Lüle boğazı (nozzle throat)",
+      "priority": "high"
+    },
+    "nozzle throat": {
+      "tr": "lüle boğazı",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "nozul boğazı",
+        "nozül boğazı"
+      ]
+    },
+    "choked flow": {
+      "tr": "tıkanmış akış",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "token": {
+      "tr": "belirteç",
+      "domain": "ml",
+      "context": "NLP - TEK terim, tutarlı kullanılmalı",
+      "priority": "high",
+      "wrong_alternatives": [
+        "jeton",
+        "simge",
+        "andaç"
+      ]
+    },
+    "tokens": {
+      "tr": "belirteçler",
+      "domain": "ml",
+      "priority": "high",
+      "wrong_alternatives": [
+        "jetonlar",
+        "simgeler",
+        "andaçlar"
+      ]
+    },
+    "tokenization": {
+      "tr": "belirteçleme",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "tokenizer": {
+      "tr": "belirteçleyici",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "tokenizers": {
+      "tr": "belirteçleyiciler",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "transformer": {
+      "tr": "dönüştürücü",
+      "domain": "ml",
+      "context": "Transformer mimarisi - TEK terim",
+      "priority": "high"
+    },
+    "transformer model": {
+      "tr": "dönüştürücü modeli",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "transformer block": {
+      "tr": "dönüştürücü bloğu",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "transformer blocks": {
+      "tr": "dönüştürücü blokları",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "transformer layer": {
+      "tr": "dönüştürücü katmanı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "attention head": {
+      "tr": "dikkat başlığı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "attention heads": {
+      "tr": "dikkat başlıkları",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "feedforward": {
+      "tr": "ileri beslemeli",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "feedforward network": {
+      "tr": "ileri beslemeli ağ",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "feed-forward network": {
+      "tr": "ileri beslemeli ağ",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "unembedding": {
+      "tr": "geri gömme",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "unembedding layer": {
+      "tr": "geri gömme katmanı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "embedding": {
+      "tr": "gömme",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "embedding layer": {
+      "tr": "gömme katmanı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "embedding matrix": {
+      "tr": "gömme matrisi",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "embeddings": {
+      "tr": "gömmeler",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "word embedding": {
+      "tr": "kelime gömmesi",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "word embeddings": {
+      "tr": "kelime gömmeleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "positional embedding": {
+      "tr": "konumsal gömme",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "activation function": {
+      "tr": "aktivasyon fonksiyonu",
+      "domain": "ml",
+      "priority": "high",
+      "wrong_alternatives": [
+        "eylem fonksiyonu"
+      ]
+    },
+    "activation functions": {
+      "tr": "aktivasyon fonksiyonları",
+      "domain": "ml",
+      "priority": "high",
+      "wrong_alternatives": [
+        "eylem fonksiyonları"
+      ]
+    },
+    "inner product": {
+      "tr": "iç çarpım",
+      "domain": "math",
+      "priority": "high",
+      "wrong_alternatives": [
+        "çarpım işareti"
+      ]
+    },
+    "orthonormal basis": {
+      "tr": "ortonormal baz",
+      "domain": "math",
+      "priority": "high"
+    },
+    "orthogonal": {
+      "tr": "ortogonal",
+      "domain": "math",
+      "priority": "high"
+    },
+    "eclipsing binary": {
+      "tr": "tutulma yapan çift yıldız",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "gölgelenen ikili",
+        "tutulmalı çift"
+      ]
+    },
+    "spectroscopic binary": {
+      "tr": "spektroskopik çift yıldız",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "binary star": {
+      "tr": "çift yıldız",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "ikili yıldız",
+        "binaer"
+      ]
+    },
+    "binary stars": {
+      "tr": "çift yıldızlar",
+      "domain": "physics",
+      "priority": "high",
+      "wrong_alternatives": [
+        "ikili yıldızlar"
+      ]
+    },
+    "ambient pressure": {
+      "tr": "ortam basıncı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "exit pressure": {
+      "tr": "çıkış basıncı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "pressure ratio": {
+      "tr": "basınç oranı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "divergent section": {
+      "tr": "ıraksak kesit",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "converging section": {
+      "tr": "yakınsak kesit",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "convergent section": {
+      "tr": "yakınsak kesit",
+      "domain": "physics",
+      "priority": "medium"
+    },
+    "divergence angle": {
+      "tr": "ıraksama açısı",
+      "domain": "physics",
+      "priority": "medium"
+    },
+    "expansion waves": {
+      "tr": "genişleme dalgaları",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "compression waves": {
+      "tr": "sıkıştırma dalgaları",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "adiabatic flame temperature": {
+      "tr": "adyabatik alev sıcaklığı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "mass flow rate": {
+      "tr": "kütle akış hızı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "heat ratio": {
+      "tr": "ısı oranı",
+      "domain": "physics",
+      "priority": "medium"
+    },
+    "specific heat ratio": {
+      "tr": "özgül ısı oranı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "throat area": {
+      "tr": "boğaz alanı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "exit area": {
+      "tr": "çıkış alanı",
+      "domain": "physics",
+      "priority": "medium"
+    },
+    "chamber pressure": {
+      "tr": "yanma odası basıncı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "expansion ratio": {
+      "tr": "genişleme oranı",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "input tokens": {
+      "tr": "girdi belirteçleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "output tokens": {
+      "tr": "çıktı belirteçleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "query vector": {
+      "tr": "sorgu vektörü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "query vectors": {
+      "tr": "sorgu vektörleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "key vector": {
+      "tr": "anahtar vektörü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "key vectors": {
+      "tr": "anahtar vektörleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "value vectors": {
+      "tr": "değer vektörleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "value vector": {
+      "tr": "değer vektörü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "context length": {
+      "tr": "bağlam uzunluğu",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "attention module": {
+      "tr": "dikkat modülü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "output projection": {
+      "tr": "çıktı projeksiyonu",
+      "domain": "ml",
+      "priority": "medium"
+    },
+    "hidden unit": {
+      "tr": "gizli birim",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "hidden units": {
+      "tr": "gizli birimler",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "tanh activation": {
+      "tr": "tanh etkinleştirme",
+      "domain": "ml",
+      "priority": "medium"
+    },
+    "logistic sigmoid": {
+      "tr": "lojistik sigmoid",
+      "domain": "ml",
+      "priority": "high",
+      "keep_original": false
+    },
+    "deep neural network": {
+      "tr": "derin sinir ağı",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "deep neural networks": {
+      "tr": "derin sinir ağları",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "weight vector": {
+      "tr": "ağırlık vektörü",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "weight vectors": {
+      "tr": "ağırlık vektörleri",
+      "domain": "ml",
+      "priority": "high"
+    },
+    "mapping function": {
+      "tr": "eşleme fonksiyonu",
+      "domain": "ml",
+      "priority": "medium"
+    },
+    "final layer": {
+      "tr": "son katman",
+      "domain": "ml",
+      "priority": "medium"
+    },
+    "early layers": {
+      "tr": "ilk katmanlar",
+      "domain": "ml",
+      "priority": "medium"
+    },
+    "radial velocity": {
+      "tr": "dikine hız",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "radial velocities": {
+      "tr": "dikine hızlar",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "light curve": {
+      "tr": "ışık eğrisi",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "light curves": {
+      "tr": "ışık eğrileri",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "orbital plane": {
+      "tr": "yörünge düzlemi",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "orbital period": {
+      "tr": "yörünge periyodu",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "visual binaries": {
+      "tr": "görsel çift yıldızlar",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "visual binary": {
+      "tr": "görsel çift yıldız",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "proper motion": {
+      "tr": "öz hareket",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "spectral lines": {
+      "tr": "tayf çizgileri",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "spectral line": {
+      "tr": "tayf çizgisi",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "semimajor axis": {
+      "tr": "yarı büyük eksen",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "semimajor axes": {
+      "tr": "yarı büyük eksenler",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "star system": {
+      "tr": "yıldız sistemi",
+      "domain": "physics",
+      "priority": "medium"
+    },
+    "binary system": {
+      "tr": "çift yıldız sistemi",
+      "domain": "physics",
+      "priority": "high"
+    },
+    "orthogonal projection": {
+      "tr": "ortogonal izdüşüm",
+      "domain": "math",
+      "priority": "high"
+    },
+    "orthogonal basis": {
+      "tr": "ortogonal taban",
+      "domain": "math",
+      "priority": "high"
+    },
+    "weighted inner product": {
+      "tr": "ağırlıklı iç çarpım",
+      "domain": "math",
+      "priority": "high"
+    },
+    "basis vector": {
+      "tr": "baz vektörü",
+      "domain": "math",
+      "priority": "high"
+    },
+    "basis vectors": {
+      "tr": "baz vektörleri",
+      "domain": "math",
+      "priority": "high"
+    },
+    "linear combination": {
+      "tr": "doğrusal bileşim",
+      "domain": "math",
+      "priority": "high"
+    },
+    "linear combinations": {
+      "tr": "doğrusal bileşimler",
+      "domain": "math",
+      "priority": "high"
+    },
+    "unit vector": {
+      "tr": "birim vektör",
+      "domain": "math",
+      "priority": "high"
+    },
+    "unit vectors": {
+      "tr": "birim vektörler",
+      "domain": "math",
+      "priority": "high"
+    },
+    "column vector": {
+      "tr": "sütun vektörü",
+      "domain": "math",
+      "priority": "high"
+    },
+    "row vector": {
+      "tr": "satır vektörü",
+      "domain": "math",
+      "priority": "high"
+    },
+    "cross product": {
+      "tr": "çapraz çarpım",
+      "domain": "math",
+      "priority": "high"
+    },
+    "scalar product": {
+      "tr": "skaler çarpım",
+      "domain": "math",
+      "priority": "high"
+    }
+  },
+  "do_not_translate": [
+    "Kinsey Institute",
+    "Harvard",
+    "MIT",
+    "Stanford",
+    "Oxford",
+    "Cambridge"
+  ]
+}

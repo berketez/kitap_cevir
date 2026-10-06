@@ -1,0 +1,37 @@
+# Açık yayına girmeyen iç belgeler (KARAR 27 ve 35, 5 Ekim 2026).
+# Dosyalar depoda kalır; yalnız `git archive` çıktısına (açık anlık görüntü ve
+# kurulum paketinin uygulama arşivi) girmez. Desenler kök klasöre bağlıdır;
+# "/" ile biten desen klasörün tamamını dışarıda bırakır.
+# Sınama: tests/test_T1_g.py, tests/test_FX5b_g.py
+/docs/archive/ export-ignore
+/kutuphane/*.md export-ignore
+/reports/ export-ignore
+/GELECEK_PLANI.md export-ignore
+/TODO.md export-ignore
+/KURALLAR.md export-ignore
+
+# Geliştirme sürecinin tasarım ve araştırma notları (iç belge).
+/docs/C5_LAYOUT_DETECTION_PLAN.md export-ignore
+/docs/LATEX_PIPELINE_ARCHITECTURE.md export-ignore
+/docs/PDF_TO_LATEX_TOOLS_COMPARISON.md export-ignore
+/packaging/TASARIM.md export-ignore
+
+# kutuphane/ klasörünün izlenen içeriği yalnız iç belgelerdir; klasörün
+# tamamı dışarıda kalır (boş klasör girdisi de oluşmaz).
+/kutuphane/ export-ignore
+# Yerel kitap klasörlerini (output/<kitap>) okuyan korpus testleri: özel depoda koşar,
+# açık yayına girmez (kitap adları ve kanıt yolları taşır; 6 Ekim 2026).
+/tests/korpus/ export-ignore
+# Paketleme testleri yalnız sürüm çıkaran makinede (kurulum prototipi, yerel lisans
+# kaynakları) anlamlıdır; DMG'ye de girmez (surum_ayarlari.DISLANANLAR).
+/packaging/testler/ export-ignore
+# Kullanılmayan yazı tipleri (hiçbir kod okumuyor; 6 Ekim 2026).
+/fonts/ export-ignore
+
+# Yapay zekâ asistanı araç artıkları (yerel izin dosyası, otomatik etkinlik
+# günlükleri). Kök CLAUDE.md açık yayında kalır: "bu kitabı çevir" denince
+# Claude Code'u CEVIRI_TALIMATI.md'ye yönlendirir.
+/.claude/ export-ignore
+/core/CLAUDE.md export-ignore
+/parsers/CLAUDE.md export-ignore
+/glossary/CLAUDE.md export-ignore

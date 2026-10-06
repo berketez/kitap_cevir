@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Kitapçevir.app Info.plist şablonu (packaging/TASARIM.md B.1).
+  Elle doldurulmaz: packaging/kabuk/derle.sh @…@ yer tutucularını doldurur.
+  KC… anahtarlarının değerleri packaging/yonetici/ayarlar.py'den (tek kaynak),
+  KCZeminRengi .streamlit/config.toml [theme] backgroundColor'dan gelir.
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>io.github.berketez.kitapcevir</string>
+	<key>CFBundleName</key>
+	<string>Kitapçevir</string>
+	<key>CFBundleDisplayName</key>
+	<string>Kitapçevir</string>
+	<key>CFBundleExecutable</key>
+	<string>Kitapcevir</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>tr</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@SURUM@</string>
+	<key>CFBundleVersion</key>
+	<string>@YAPI@</string>
+	<key>CFBundleIconFile</key>
+	<string>Kitapcevir</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>@MIN_MACOS@</string>
+	<key>LSArchitecturePriority</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>NSHumanReadableCopyright</key>
+	<string>© Berke Tezgöçen · GNU GPL 3.0</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+
+	<!-- Kök (~/Library/Application Support/<ad>) ve günlük (~/Library/Logs/<ad>) klasörünün adı -->
+	<key>KCKlasorAdi</key>
+	<string>Kitapçevir</string>
+	<!-- ayarlar.py: YONETICI_HAZIR_ZAMAN_ASIMI_SN -->
+	<key>KCYoneticiHazirZamanAsimiSn</key>
+	<integer>@YONETICI_HAZIR_ZAMAN_ASIMI_SN@</integer>
+	<!-- ayarlar.py: KAPANIS_SURESI_SN (yöneticinin ilk satırı gelmeden kapanırken) -->
+	<key>KCKapanisSuresiSn</key>
+	<integer>@KAPANIS_SURESI_SN@</integer>
+	<!-- ayarlar.py: KILIT_DOLU_CIKIS_KODU -->
+	<key>KCKilitDoluCikisKodu</key>
+	<integer>@KILIT_DOLU_CIKIS_KODU@</integer>
+	<!-- ayarlar.py: GUNLUK_BOYUT_BAYT, GUNLUK_ADET -->
+	<key>KCGunlukBoyutBayt</key>
+	<integer>@GUNLUK_BOYUT_BAYT@</integer>
+	<key>KCGunlukAdet</key>
+	<integer>@GUNLUK_ADET@</integer>
+	<!-- .streamlit/config.toml [theme] backgroundColor: pencere zemini -->
+	<key>KCZeminRengi</key>
+	<string>@ZEMIN@</string>
+</dict>
+</plist>

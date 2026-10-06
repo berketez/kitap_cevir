@@ -1,0 +1,808 @@
+{
+ "mlx": {
+  "exit_code": 0,
+  "prompts": [
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.<|extra_4|>Orbital Motion<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.<|extra_4|>Energy of the Orbit<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.<|extra_4|>Circular Orbits<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>Quantity<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>Value<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>Mass of the planet<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>very large<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>This relation is known as the vis-viva equation.<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.<|extra_4|>The satellite moves along an elliptical path around the planet. Its speed changes with the distance <<LATEX_2>> from the focus, as shown by the relation <<LATEX_3>>.<<LATEX_4>><|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.<|extra_4|>We refer to Section~<<LATEX_7>> and cite <<LATEX_8>> for the historical background of the problem, as shown in <<LATEX_9>>.<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>The total energy depends only on the semi-major axis of the ellipse, which is a remarkable result for any student of mechanics.<|extra_0|>"
+   },
+   {
+    "max_tokens": 512,
+    "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>A circular orbit is a special case of the ellipse in which the distance from the focus never changes during the motion of the body.<|extra_0|>"
+   }
+  ],
+  "retranslator": {
+   "english_lines_found": 2,
+   "output": "\\section{Yörünge Hareketi}\n\nUydu gezegenin çevresinde eliptik bir yolda hareket eder ve hızı değişir.\n\nEğri dönüş yüzey ışık eğri kütle şekil kuvvet kuvvet eğri ağırlık ışık eğri yörünge.\n\n\\subsection{Eğri Çalışma Işık Eğri Yörünge}\n\nBu bölümde yörüngenin biçimi incelenir; ayrıntılar ekte verilmiştir.\n",
+   "prompts": [
+    {
+     "max_tokens": 512,
+     "prompt": "<|startoftext|>Translate from English to Turkish. Preserve math notation. Output only the translation.<|extra_4|>The total energy of the satellite depends only on the size of the orbit.<|extra_0|>"
+    },
+    {
+     "max_tokens": 512,
+     "prompt": "<|startoftext|>Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.<|extra_4|>The Shape of the Orbit<|extra_0|>"
+    }
+   ],
+   "retranslated_lines": 2
+  },
+  "translated_body": "\\chapter{Yüzey Kuvvet}\\label{ch:orbit}\n\n\\section{Giriş}\n\nEğri kütle dönüş şekil eğri kütle açı düzlem eğri yüzey. Yüzey eğri yüzey ağırlık eğri düzlem $r$ şekil eğri düzlem, yörünge güneş ışık eğri yüzey $v^2 = GM(2/r - 1/a)$.\\footnote{Öğrenci yüzey öğrenci ışık yörünge eğri kuvvet-düzlem düzlem.}\n\n\\section{Yüzey Işık Eğri Yörünge}\\label{sec:energy}\n\nYüzey kütle akış Öğrenci~\\ref{ch:orbit} değer açı \\cite{kepler1609} hız eğri açı kuvvet ışık eğri çalışma, yörünge güneş ağırlık Şekil 2.\n\n\\begin{equation}\nE = -\\frac{GMm}{2a}\n\\label{eq:energy}\n\\end{equation}\n\nEğri dönüş yüzey şekil kuvvet kuvvet eğri öğrenci-güneş ışık ışık eğri sıcaklık, öğrenci öğrenci kütle yüzey kütle hız çalışma açı ışık düzlem.\n\n\\begin{tabular}{ll}\nEğri & Hız \\\\\nSıcaklık ışık eğri yüzey & basınç ışık \\\\\n\\end{tabular}\n\nOmnis motus corporum est in tempore et quod semper idem manet.\n\n\\subsection{Akış Hız}\n\nKütle akış yörünge öğrenci kütle yörünge çalışma ışık eğri sıcaklık ağırlık öğrenci eğri düzlem şekil eğri düzlem akış yüzey sıcaklık eğri kuvvet ışık eğri ağırlık.\n"
+ },
+ "ollama": {
+  "exit_code": 0,
+  "requests": [
+   {
+    "json": null,
+    "method": "GET",
+    "path": "/api/tags"
+   },
+   {
+    "json": {
+     "model": "sahte"
+    },
+    "method": "POST",
+    "path": "/api/show"
+   },
+   {
+    "json": {
+     "model": "sahte"
+    },
+    "method": "POST",
+    "path": "/api/show"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192
+     },
+     "prompt": "",
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/generate"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nOrbital Motion",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nEnergy of the Orbit",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nCircular Orbits",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nQuantity",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nValue",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nMass of the planet",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nvery large",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThis relation is known as the vis-viva equation.",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.\n\nThe satellite moves along an elliptical path around the planet. Its speed changes with the distance <<LATEX_2>> from the focus, as shown by the relation <<LATEX_3>>.<<LATEX_4>>",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.\n\nWe refer to Section~<<LATEX_7>> and cite <<LATEX_8>> for the historical background of the problem, as shown in <<LATEX_9>>.",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThe total energy depends only on the semi-major axis of the ellipse, which is a remarkable result for any student of mechanics.",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   },
+   {
+    "json": {
+     "keep_alive": "30m",
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nA circular orbit is a special case of the ellipse in which the distance from the focus never changes during the motion of the body.",
+       "role": "user"
+      }
+     ],
+     "model": "sahte",
+     "options": {
+      "num_ctx": 8192,
+      "num_predict": 512,
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "temperature": 0.0
+     },
+     "stream": false
+    },
+    "method": "POST",
+    "path": "/api/chat"
+   }
+  ],
+  "retranslator": {
+   "english_lines_found": 2,
+   "output": "\\section{Yörünge Hareketi}\n\nUydu gezegenin çevresinde eliptik bir yolda hareket eder ve hızı değişir.\n\nEğri dönüş yüzey ışık eğri kütle şekil kuvvet kuvvet eğri ağırlık ışık eğri yörünge.\n\n\\subsection{Eğri Çalışma Işık Eğri Yörünge}\n\nBu bölümde yörüngenin biçimi incelenir; ayrıntılar ekte verilmiştir.\n",
+   "requests": [
+    {
+     "json": {
+      "model": "sahte"
+     },
+     "method": "POST",
+     "path": "/api/show"
+    },
+    {
+     "json": {
+      "keep_alive": "30m",
+      "model": "sahte",
+      "options": {
+       "num_ctx": 8192
+      },
+      "prompt": "",
+      "stream": false
+     },
+     "method": "POST",
+     "path": "/api/generate"
+    },
+    {
+     "json": {
+      "keep_alive": "30m",
+      "messages": [
+       {
+        "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThe total energy of the satellite depends only on the size of the orbit.",
+        "role": "user"
+       }
+      ],
+      "model": "sahte",
+      "options": {
+       "num_ctx": 8192,
+       "num_predict": 512,
+       "repeat_penalty": 1.0,
+       "seed": 0,
+       "temperature": 0.0
+      },
+      "stream": false
+     },
+     "method": "POST",
+     "path": "/api/chat"
+    },
+    {
+     "json": {
+      "keep_alive": "30m",
+      "messages": [
+       {
+        "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nThe Shape of the Orbit",
+        "role": "user"
+       }
+      ],
+      "model": "sahte",
+      "options": {
+       "num_ctx": 8192,
+       "num_predict": 512,
+       "repeat_penalty": 1.0,
+       "seed": 0,
+       "temperature": 0.0
+      },
+      "stream": false
+     },
+     "method": "POST",
+     "path": "/api/chat"
+    }
+   ],
+   "retranslated_lines": 2
+  },
+  "translated_body": "\\chapter{Yüzey Kuvvet}\\label{ch:orbit}\n\n\\section{Giriş}\n\nEğri kütle dönüş şekil eğri kütle açı düzlem eğri yüzey. Yüzey eğri yüzey ağırlık eğri düzlem $r$ şekil eğri düzlem, yörünge güneş ışık eğri yüzey $v^2 = GM(2/r - 1/a)$.\\footnote{Öğrenci yüzey öğrenci ışık yörünge eğri kuvvet-düzlem düzlem.}\n\n\\section{Yüzey Işık Eğri Yörünge}\\label{sec:energy}\n\nYüzey kütle akış Öğrenci~\\ref{ch:orbit} değer açı \\cite{kepler1609} hız eğri açı kuvvet ışık eğri çalışma, yörünge güneş ağırlık Şekil 2.\n\n\\begin{equation}\nE = -\\frac{GMm}{2a}\n\\label{eq:energy}\n\\end{equation}\n\nEğri dönüş yüzey şekil kuvvet kuvvet eğri öğrenci-güneş ışık ışık eğri sıcaklık, öğrenci öğrenci kütle yüzey kütle hız çalışma açı ışık düzlem.\n\n\\begin{tabular}{ll}\nEğri & Hız \\\\\nSıcaklık ışık eğri yüzey & basınç ışık \\\\\n\\end{tabular}\n\nOmnis motus corporum est in tempore et quod semper idem manet.\n\n\\subsection{Akış Hız}\n\nKütle akış yörünge öğrenci kütle yörünge çalışma ışık eğri sıcaklık ağırlık öğrenci eğri düzlem şekil eğri düzlem akış yüzey sıcaklık eğri kuvvet ışık eğri ağırlık.\n"
+ },
+ "openai": {
+  "exit_code": 0,
+  "requests": [
+   {
+    "json": null,
+    "method": "GET",
+    "path": "/v1/models"
+   },
+   {
+    "json": null,
+    "method": "GET",
+    "path": "/v1/models"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 1,
+     "messages": [
+      {
+       "content": "Merhaba",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nOrbital Motion",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nEnergy of the Orbit",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nCircular Orbits",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nQuantity",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nValue",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nMass of the planet",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nvery large",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThis relation is known as the vis-viva equation.",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.\n\nThe satellite moves along an elliptical path around the planet. Its speed changes with the distance <<LATEX_2>> from the focus, as shown by the relation <<LATEX_3>>.<<LATEX_4>>",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Keep placeholder tokens like <<LATEX_N>> exactly as they are. Output only the translation.\n\nWe refer to Section~<<LATEX_7>> and cite <<LATEX_8>> for the historical background of the problem, as shown in <<LATEX_9>>.",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThe total energy depends only on the semi-major axis of the ellipse, which is a remarkable result for any student of mechanics.",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   },
+   {
+    "json": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     },
+     "max_tokens": 512,
+     "messages": [
+      {
+       "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nA circular orbit is a special case of the ellipse in which the distance from the focus never changes during the motion of the body.",
+       "role": "user"
+      }
+     ],
+     "model": "qwen",
+     "repeat_penalty": 1.0,
+     "seed": 0,
+     "stream": false,
+     "temperature": 0.0
+    },
+    "method": "POST",
+    "path": "/v1/chat/completions"
+   }
+  ],
+  "retranslator": {
+   "english_lines_found": 2,
+   "output": "\\section{Yörünge Hareketi}\n\nUydu gezegenin çevresinde eliptik bir yolda hareket eder ve hızı değişir.\n\nEğri dönüş yüzey ışık eğri kütle şekil kuvvet kuvvet eğri ağırlık ışık eğri yörünge.\n\n\\subsection{Eğri Çalışma Işık Eğri Yörünge}\n\nBu bölümde yörüngenin biçimi incelenir; ayrıntılar ekte verilmiştir.\n",
+   "requests": [
+    {
+     "json": null,
+     "method": "GET",
+     "path": "/v1/models"
+    },
+    {
+     "json": {
+      "chat_template_kwargs": {
+       "enable_thinking": false
+      },
+      "max_tokens": 1,
+      "messages": [
+       {
+        "content": "Merhaba",
+        "role": "user"
+       }
+      ],
+      "model": "qwen",
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "stream": false,
+      "temperature": 0.0
+     },
+     "method": "POST",
+     "path": "/v1/chat/completions"
+    },
+    {
+     "json": {
+      "chat_template_kwargs": {
+       "enable_thinking": false
+      },
+      "max_tokens": 512,
+      "messages": [
+       {
+        "content": "Translate from English to Turkish. Preserve math notation. Output only the translation.\n\nThe total energy of the satellite depends only on the size of the orbit.",
+        "role": "user"
+       }
+      ],
+      "model": "qwen",
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "stream": false,
+      "temperature": 0.0
+     },
+     "method": "POST",
+     "path": "/v1/chat/completions"
+    },
+    {
+     "json": {
+      "chat_template_kwargs": {
+       "enable_thinking": false
+      },
+      "max_tokens": 512,
+      "messages": [
+       {
+        "content": "Translate this heading from English to Turkish. It is a short title; translate it fully into Turkish. Do not repeat the English text. Output only the translated heading.\n\nThe Shape of the Orbit",
+        "role": "user"
+       }
+      ],
+      "model": "qwen",
+      "repeat_penalty": 1.0,
+      "seed": 0,
+      "stream": false,
+      "temperature": 0.0
+     },
+     "method": "POST",
+     "path": "/v1/chat/completions"
+    }
+   ],
+   "retranslated_lines": 2
+  },
+  "translated_body": "\\chapter{Yüzey Kuvvet}\\label{ch:orbit}\n\n\\section{Giriş}\n\nEğri kütle dönüş şekil eğri kütle açı düzlem eğri yüzey. Yüzey eğri yüzey ağırlık eğri düzlem $r$ şekil eğri düzlem, yörünge güneş ışık eğri yüzey $v^2 = GM(2/r - 1/a)$.\\footnote{Öğrenci yüzey öğrenci ışık yörünge eğri kuvvet-düzlem düzlem.}\n\n\\section{Yüzey Işık Eğri Yörünge}\\label{sec:energy}\n\nYüzey kütle akış Öğrenci~\\ref{ch:orbit} değer açı \\cite{kepler1609} hız eğri açı kuvvet ışık eğri çalışma, yörünge güneş ağırlık Şekil 2.\n\n\\begin{equation}\nE = -\\frac{GMm}{2a}\n\\label{eq:energy}\n\\end{equation}\n\nEğri dönüş yüzey şekil kuvvet kuvvet eğri öğrenci-güneş ışık ışık eğri sıcaklık, öğrenci öğrenci kütle yüzey kütle hız çalışma açı ışık düzlem.\n\n\\begin{tabular}{ll}\nEğri & Hız \\\\\nSıcaklık ışık eğri yüzey & basınç ışık \\\\\n\\end{tabular}\n\nOmnis motus corporum est in tempore et quod semper idem manet.\n\n\\subsection{Akış Hız}\n\nKütle akış yörünge öğrenci kütle yörünge çalışma ışık eğri sıcaklık ağırlık öğrenci eğri düzlem şekil eğri düzlem akış yüzey sıcaklık eğri kuvvet ışık eğri ağırlık.\n"
+ }
+}

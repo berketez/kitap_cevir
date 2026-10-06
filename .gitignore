@@ -1,0 +1,39 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+models/
+output/
+data/translation_memory*.db*
+data/translation_memory*.db-shm
+data/translation_memory*.db-wal
+data/translation_memory\ 2*
+data/translation_memory\ 3*
+data/translation_memory\ 7*
+data/translation_memory\ 8*
+data/translation_memory\ 9*
+*.egg-info/
+.DS_Store
+data/dictionary/
+*.bak.*
+
+# Telifli kitap içeriği — depoya girmez (yerel çalışma klasörleri)
+cevrilenkitaplar/
+kutuphane/*/
+# macOS kopya artığı
+exporters/markdown_exporter 2.py
+# Yerel Claude proje işaretçisi (makineye özgü yol içerir)
+.claude-project
+
+# Playwright MCP oturum dosyaları (arayüz denetimi)
+.playwright-mcp/
+
+# Yerel model seçimi ve makineye özgü model/sunucu ayarları (isteğe bağlı;
+# elle ayar: docs/YENI_MODEL_EKLEME.md)
+config/mt_selection.json
+config/mt_sources.json
+config/mt_engines.json
+
+# patch artıkları
+*.orig
+*.rej

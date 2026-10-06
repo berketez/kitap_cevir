@@ -1,0 +1,7 @@
+# GGUF desteği (isteğe bağlı): llama-cpp-python 0.3.35.
+# PyPI'da yalnız kaynak paketi (sdist, 74,9 MB) var → Metal derlemesi gerekir:
+#   CMAKE_ARGS="-DGGML_METAL=on" (Xcode Komut Satırı Araçları: clang). 
+# Resmî hazır Metal tekerleği (GitHub release v0.3.35-metal) BOZUK ZIP (29 Eylül 2026 ölçümü:
+# "Bad CRC-32 for file lib/cmake/ggml/ggml-config.cmake"; uv ve pip ikisi de reddediyor) → kullanılamaz.
+# Öneri: tekerleği sürüm çıkarken bir kez derleyip Kitapçevir release'ine koymak (bkz. RAPOR.md).
+llama-cpp-python==0.3.35

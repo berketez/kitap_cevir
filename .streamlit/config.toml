@@ -1,0 +1,32 @@
+[server]
+# Yalnız bu Mac'ten erişilir. Streamlit Host başlığını denetlemez; DNS yeniden
+# bağlamaya karşı paketli kipte yönetici her açılışta tahmin edilemez bir taban
+# yolu da verir (--server.baseUrlPath; packaging/yonetici/surecler.py, K9 D8).
+address = "127.0.0.1"
+fileWatcherType = "none"
+runOnSave = false
+# MB. Taranmış kitaplar büyük olabilir (ör. 386 sayfalık DjVu taraması 112 MB).
+# Arayüzün kendi yükleme kontrolü de bu değeri okur (ui.runner.upload_problem).
+maxUploadSize = 500
+# Sertleştirme (K9 D8): istekler yalnız aynı kökenden (XSRF + CORS, ek köken yok);
+# static/ klasöründen dosya sunumu kapalı.
+enableXsrfProtection = true
+enableCORS = true
+corsAllowedOrigins = []
+enableStaticServing = false
+
+[browser]
+gatherUsageStats = false
+# Tarayıcıya ve CORS/XSRF denetimine bildirilen adres, dinlenen adresle aynı.
+serverAddress = "127.0.0.1"
+
+[runner]
+fastReruns = false
+
+# Mart 2026 arayüzünün koyu görünümü; vurgu rengi onun indigo tonu.
+[theme]
+base = "dark"
+primaryColor = "#6366f1"
+backgroundColor = "#0a0a0f"
+secondaryBackgroundColor = "#16161f"
+textColor = "#e5e7eb"

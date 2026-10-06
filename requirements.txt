@@ -1,0 +1,32 @@
+# ============================================
+# Kitapçevir: geliştirici kurulumu (bağımlılıklar)
+# Python 3.12, macOS 14 ya da sonrası, Apple Silicon (arm64)
+# ============================================
+#
+# TEK KAYNAK: packaging/requirements/*.txt kilitleri (tam kapanış; sürümler ve
+# SHA-256 özetleri sabit; üretici: packaging/requirements/derle_kilit.sh). Bu dosya
+# yalnız onları gösterir, buraya paket ya da sürüm yazılmaz. DMG kurulumu da aynı
+# kilitleri kullanır (packaging/TASARIM.md F6).
+#
+# Kurulum (proje kökünde, yeni sanal ortam):
+#   python3.12 -m venv venv
+#   ./venv/bin/pip install --no-deps -r requirements.txt
+#
+# --no-deps GEREKLİ: kilitler tam kapanıştır, test edilmiş hâli birebir kurar.
+# mlx-lm 0.30.7 "transformers>=5" ister, marker-pdf 1.10.2 "transformers<5" ister;
+# test edilen ve kilitlenen sürüm transformers 4.57.6'dır
+# (packaging/requirements/girdi/overrides.txt). pip'in çözücüsü bu çelişkide durur.
+# uv ile: uv pip install --no-deps -r requirements.txt
+#
+# İsteğe bağlı GGUF desteği ("Yerel model ile çevir"de GGUF dosyasını Ollama /
+# LM Studio olmadan açmak için) burada KURULMAZ. Apple Silicon (Metal) kurulumu,
+# proje klasöründe (ayrıntı: docs/YENI_MODEL_EKLEME.md):
+#   CMAKE_ARGS="-DGGML_METAL=on" ./venv/bin/pip install llama-cpp-python
+# Kilitli sürüm (Xcode Komut Satırı Araçları gerekir):
+#   CMAKE_ARGS="-DGGML_METAL=on" ./venv/bin/pip install --no-deps -r packaging/requirements/gguf.txt
+#
+# Sınama aracı kilitlerde yoktur: ./venv/bin/pip install pytest
+
+-r packaging/requirements/cekirdek.txt
+-r packaging/requirements/mlx.txt
+-r packaging/requirements/pdf.txt

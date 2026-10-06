@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kitapcevir/manifest/1",
+  "title": "Kitapçevir bileşen manifesti",
+  "description": "TASARIM C.2. Sürüm betiği üretir, elle yazılmaz. Yapısal kurallar burada; anlamsal kurallar (kimlik tekliği, bağımlılık döngüsü, indirme_bayt = öğe baytları toplamı, grup varsayılanı, hedef çakışması) packaging/yonetici/manifest.py dogrula() içindedir. Depo / kaynak kodu / güncelleme adresi manifestte DEĞİL, packaging/yonetici/ayarlar.py'dedir (tek yer). HY-MT için bölge beyanı alanı yoktur (Berke kararı, 30 Eylül 2026).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sema_surumu", "uygulama", "olcum", "gruplar", "bilesenler"],
+  "properties": {
+    "sema_surumu": {"const": 1},
+    "uygulama": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surum", "yapi", "min_macos", "mimari", "calisma_zamani"],
+      "properties": {
+        "surum": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "yapi": {"type": "string", "minLength": 1, "description": "git kısa SHA"},
+        "min_macos": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$"},
+        "mimari": {"const": "arm64"},
+        "calisma_zamani": {"$ref": "#/$defs/oge"}
+      }
+    },
+    "olcum": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tarih", "makine", "macos", "yontem"],
+      "properties": {
+        "tarih": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "makine": {"type": "string", "minLength": 1},
+        "macos": {"type": "string", "minLength": 1},
+        "yontem": {"type": "string", "minLength": 1}
+      }
+    },
+    "gruplar": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kimlik", "tur", "varsayilan", "zorunlu"],
+        "properties": {
+          "kimlik": {"$ref": "#/$defs/kimlik"},
+          "ad": {"type": "string", "minLength": 1},
+          "tur": {"const": "tek_secim"},
+          "varsayilan": {"$ref": "#/$defs/kimlik"},
+          "zorunlu": {"type": "boolean"}
+        }
+      }
+    },
+    "bilesenler": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/bilesen"}}
+  },
+  "$defs": {
+    "kimlik": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "https_url": {"type": "string", "pattern": "^https://[^\\s/?#@]+(/[^\\s]*)?$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "bayt_sozlugu": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "macOS ana sürümü ('14', '26') ya da bütün sürümler için 'hepsi' → bayt. İkisi karışmaz.",
+      "propertyNames": {"pattern": "^(hepsi|[0-9]+)$"},
+      "additionalProperties": {"type": "integer", "minimum": 0},
+      "if": {"required": ["hepsi"]},
+      "then": {"maxProperties": 1}
+    },
+    "oge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kimlik", "url", "bayt", "sha256", "hedef"],
+      "properties": {
+        "kimlik": {"type": "string", "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"},
+        "url": {"$ref": "#/$defs/https_url"},
+        "yedek_urller": {"type": "array", "items": {"$ref": "#/$defs/https_url"}},
+        "bayt": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "hedef": {
+          "type": "string",
+          "description": "köke göre yol; mutlak, '~', '.', '..', boş parça ve ters eğik çizgi yasak",
+          "pattern": "^(?![/~])(?!(?:.*/)?\\.{1,2}(?:/|$))(?!.*//)(?!.*/$)[^\\\\\\u0000]+$"
+        },
+        "tur": {"enum": ["dosya", "tekerlek", "arsiv", "pkg"]},
+        "kosul": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["macos"],
+          "properties": {
+            "macos": {
+              "type": "array",
+              "minItems": 1,
+              "description": "'14' yalnız macOS 14; '26+' macOS 26 ve sonrası",
+              "items": {"type": "string", "pattern": "^[0-9]+\\+?$"}
+            }
+          }
+        },
+        "yeniden_kullan": {
+          "type": "array",
+          "description": "aynı SHA-256'lı dosyanın aranacağı BİLİNEN yollar (~ açılır; klasörse hedefin dosya adı eklenir); bulunursa APFS klonu. Tarama yapılmaz.",
+          "items": {"type": "string", "pattern": "^[~/]"}
+        }
+      }
+    },
+    "donanim_kosulu_tek": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tur"],
+          "properties": {"tur": {"const": "yerel_model_genel_kapi"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tur", "agirlik_bayt", "kv"],
+          "properties": {
+            "tur": {"const": "model_sigar"},
+            "agirlik_bayt": {"type": "integer", "minimum": 1},
+            "config": {"type": "object", "description": "modelin config.json alanları, birebir (varsa KV şekli bundan okunur; yoksa kv alanlarından; K3 donanim.py)"},
+            "kv": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["katman", "kv_basligi", "head_dim", "oge_bayt"],
+              "properties": {
+                "katman": {"type": "integer", "minimum": 1},
+                "kv_basligi": {"type": "integer", "minimum": 1},
+                "head_dim": {"type": "integer", "minimum": 1},
+                "oge_bayt": {"type": "integer", "minimum": 1}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dogrulama_tek": {
+      "type": "object",
+      "required": ["tur"],
+      "properties": {
+        "tur": {"enum": ["python_ice_aktar", "dosyalar_sha", "tex_derle", "komut"]},
+        "moduller": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "bilesen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kimlik", "ad", "aciklama", "zorunluluk", "boyut", "ogeler", "adimlar", "dogrulama"],
+      "properties": {
+        "kimlik": {"$ref": "#/$defs/kimlik"},
+        "ad": {"type": "string", "minLength": 1},
+        "aciklama": {"type": "string", "description": "boş olabilir (ör. tex-kurulu: açıklama algılamadan gelir)"},
+        "zorunluluk": {"enum": ["zorunlu", "istege_bagli", "secim"]},
+        "grup": {"type": ["string", "null"]},
+        "surum": {"type": "string"},
+        "bagimliliklar": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/kimlik"}},
+        "donanim_kosulu": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/donanim_kosulu_tek"},
+            {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/donanim_kosulu_tek"}}
+          ]
+        },
+        "on_kosul": {"type": "object", "description": "ör. {'algila': 'tex_kurulu'}: yalnız algılanınca gösterilir (K3)"},
+        "lisans": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["spdx", "onay_gerekli"],
+          "properties": {
+            "spdx": {"type": "string", "minLength": 1},
+            "metin_dosyasi": {"type": "string", "minLength": 1},
+            "metin_sha256": {"$ref": "#/$defs/sha256"},
+            "metin_url": {"$ref": "#/$defs/https_url"},
+            "onay_gerekli": {"type": "boolean"},
+            "dagitim": {"enum": ["dmg", "indirilir", "harici_kurulum"]},
+            "kaynak_kodu_url": {"$ref": "#/$defs/https_url", "description": "üçüncü tarafın kaynak kodu (GPL/AGPL); Kitapçevir'in kendi deposu ayarlar.py'de"}
+          },
+          "if": {"properties": {"onay_gerekli": {"const": true}}},
+          "then": {"required": ["metin_sha256", "metin_url"]}
+        },
+        "boyut": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["indirme_bayt", "disk_bayt", "olcum_notu"],
+          "properties": {
+            "indirme_bayt": {"$ref": "#/$defs/bayt_sozlugu"},
+            "disk_bayt": {"$ref": "#/$defs/bayt_sozlugu"},
+            "ek_ag_bayt_olculen": {"type": "integer", "minimum": 0, "description": "öğe dışı ağ trafiği, ör. tectonic ısıtması (en0 ölçümü)"},
+            "olcum_notu": {"type": "string", "minLength": 1}
+          }
+        },
+        "ogeler": {"type": "array", "items": {"$ref": "#/$defs/oge"}},
+        "adimlar": {
+          "type": "array",
+          "description": "adım parametreleri (ör. uv_kur için kilit dosyası) K3'ün alanıdır; burada yalnız 'tur' denetlenir",
+          "items": {
+            "type": "object",
+            "required": ["tur"],
+            "properties": {
+              "tur": {"enum": ["uv_kur", "tekerlek_kur", "arsiv_ac", "dosya_yerlestir", "tectonic_isit",
+                               "mactex_pkg_ac", "tex_algila_sina", "lisans_yaz", "surya_manifest_yaz"]}
+            }
+          }
+        },
+        "dogrulama": {
+          "description": "tek doğrulama ya da sırayla koşan doğrulama listesi (K3 kurulum.py ikisini de okur); ek alanlar (argv, ortam) K3'ün alanıdır",
+          "oneOf": [
+            {"$ref": "#/$defs/dogrulama_tek"},
+            {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/dogrulama_tek"}}
+          ]
+        },
+        "kaldirilabilir": {"type": "boolean"},
+        "sayac_beklenen": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["birim", "n"],
+          "properties": {"birim": {"type": "string", "minLength": 1}, "n": {"type": "integer", "minimum": 0}}
+        }
+      },
+      "if": {"properties": {"zorunluluk": {"const": "secim"}}, "required": ["zorunluluk"]},
+      "then": {"required": ["grup"], "properties": {"grup": {"$ref": "#/$defs/kimlik"}}},
+      "else": {"properties": {"grup": {"type": "null"}}}
+    }
+  }
+}

@@ -1,0 +1,13 @@
+# Çekirdek: Python arayüzü (Streamlit), EPUB yolu, PDF okuma (PyMuPDF), bellek/terim (rapidfuzz),
+# model indirme (huggingface_hub). Sürümler mevcut venv'den (1 Eylül–29 Eylül 2026 testleri bu sürümlerle).
+streamlit==1.55.0
+PyMuPDF==1.27.1
+EbookLib==0.20
+beautifulsoup4==4.14.3
+lxml==6.0.2
+rapidfuzz==3.14.3
+pillow==10.4.0
+numpy==2.4.2
+Jinja2==3.1.6
+python-docx==1.2.0
+huggingface_hub==0.36.2

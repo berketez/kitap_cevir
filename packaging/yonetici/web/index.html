@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Kitapçevir</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/tema.css">
+<link rel="stylesheet" href="/sihirbaz.css">
+<script src="/sihirbaz.js" defer></script>
+</head>
+<body>
+<!--
+  Kitapçevir kurulum sihirbazı ve Bileşenler ekranı (TASARIM E).
+  Bu sayfada sayı yazılı değildir: her boyut, süre ve ilerleme yöneticinin
+  API'sinden (/api/durum, /api/plan, /api/olaylar) gelir. Dış kaynak yoktur.
+-->
+<main class="kap">
+  <header class="logo">
+    <div class="logo-metin" id="uygulama-adi">Kitapçevir</div>
+    <div class="logo-alt" id="alt-baslik" lang="tr"></div>
+  </header>
+
+  <div id="genel-ileti" class="kutu hata" role="alert" hidden></div>
+
+  <!-- Açılış: durum okunurken -->
+  <section id="ekran-yukleniyor" class="ekran" aria-live="polite">
+    <p class="soluk">Durum okunuyor…</p>
+  </section>
+
+  <!-- E.1 Hoş geldin -->
+  <section id="ekran-hosgeldin" class="ekran" hidden>
+    <h1>Kurulum</h1>
+    <p id="hosgeldin-ilk"><span data-ad="uygulama">Kitapçevir</span>'i ilk kez açıyorsun.
+      Çalışması için bazı bileşenlerin bu Mac'e indirilmesi gerekiyor.</p>
+    <p id="hosgeldin-yarim" hidden>Kurulum tamamlanmamış: bazı zorunlu bileşenler eksik.
+      Eksikler bu Mac'e indirilecek; kurulu olanlar ve yarım inen dosyalar yeniden inmez.</p>
+    <div class="kart">
+      <p id="mac-bilgisi"></p>
+      <p id="internet-bilgisi"></p>
+      <p id="donanim-uyarisi" class="uyari-metin" hidden></p>
+    </div>
+    <p id="kaynaklar-bilgisi" class="soluk"></p>
+    <div class="dugmeler">
+      <span></span>
+      <button type="button" class="birincil" id="hosgeldin-devam">Devam →</button>
+    </div>
+  </section>
+
+  <!-- E.2 Lisanslar (Datalab onayı zorunlu) -->
+  <section id="ekran-lisans" class="ekran" hidden>
+    <h1 id="lisans-baslik"></h1>
+    <div id="lisans-govde"></div>
+    <div class="baglantilar">
+      <button type="button" class="baglanti" id="lisans-tam-metin"></button>
+      <button type="button" class="baglanti" id="lisans-hepsi">Tüm lisansları göster</button>
+    </div>
+    <label class="onay-kutusu">
+      <input type="checkbox" id="lisans-kutu">
+      <span id="lisans-kutu-etiketi"></span>
+    </label>
+    <div id="lisans-red" class="kutu hata" role="alert" hidden>
+      <p id="lisans-red-iletisi"></p>
+      <p>Kurulum durduruldu. Lisansı yeniden okuyup kabul edersen kurulum kaldığı yerden sürer.
+        Uygulamayı kapatmak için ⌘Q.</p>
+    </div>
+    <div class="dugmeler">
+      <button type="button" class="ikincil" id="lisans-geri">← Geri</button>
+      <span class="sag">
+        <button type="button" class="ikincil" id="lisans-reddet">Kabul etmiyorum</button>
+        <button type="button" class="birincil" id="lisans-devam" disabled>Devam →</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- E.3 Bileşen seçimi -->
+  <section id="ekran-secim" class="ekran" hidden>
+    <h1>Bileşenler</h1>
+    <div class="bolum-baslik"><span>Zorunlu bileşenler (değiştirilemez)</span>
+      <span class="sutunlar"><span>indirme</span><span>disk</span></span></div>
+    <div id="secim-zorunlu" class="liste"></div>
+    <div class="bolum-baslik"><span>TeX dağıtımı (birini seç)</span>
+      <span class="sutunlar"><span>indirme</span><span>disk</span></span></div>
+    <div id="secim-tex" class="liste" role="radiogroup" aria-label="TeX dağıtımı"></div>
+    <div class="bolum-baslik"><span>İsteğe bağlı</span>
+      <span class="sutunlar"><span>indirme</span><span>disk</span></span></div>
+    <div id="secim-istege" class="liste"></div>
+    <p class="soluk">Ollama ya da LM Studio kuruluysa <span data-ad="uygulama">Kitapçevir</span>
+      onları kendisi bulur; burada kurulmaz.</p>
+    <p id="secim-olcum" class="soluk kucuk"></p>
+    <p id="secim-ileti" class="kutu uyari" role="alert" hidden></p>
+    <div class="dugmeler">
+      <button type="button" class="ikincil" id="secim-geri">← Geri</button>
+      <button type="button" class="birincil" id="secim-devam">Devam →</button>
+    </div>
+  </section>
+
+  <!-- E.4 Özet -->
+  <section id="ekran-ozet" class="ekran" hidden>
+    <h1>Özet</h1>
+    <div class="kart">
+      <p><strong>Kurulacaklar:</strong> <span id="ozet-kurulacaklar"></span></p>
+      <p id="ozet-toplam"></p>
+      <p id="ozet-olculmeyen" class="soluk" hidden></p>
+      <p id="ozet-disk"></p>
+      <p>Kurulum yeri: <span id="ozet-yer" class="yol"></span></p>
+      <p class="soluk">Süre bağlantı hızına bağlıdır.</p>
+    </div>
+    <div class="bolum-baslik"><span>Bileşen</span>
+      <span class="sutunlar"><span>indirme</span><span>disk</span></span></div>
+    <div id="ozet-tablo" class="liste"></div>
+    <div id="ozet-internet" class="kutu uyari" hidden>
+      <p>Bağlantı yok. Kurulu bileşenler kullanılabilir; eksikler bağlantı gelince kurulur.</p>
+      <button type="button" class="ikincil" id="ozet-internet-yenile">Yeniden dene</button>
+    </div>
+    <div id="ozet-onay" class="kutu hata" role="alert" hidden></div>
+    <div class="dugmeler">
+      <button type="button" class="ikincil" id="ozet-geri">← Geri</button>
+      <button type="button" class="birincil" id="ozet-kur">Kur</button>
+    </div>
+  </section>
+
+  <!-- E.5 Kurulum: gerçek bayt ilerlemesi -->
+  <section id="ekran-kurulum" class="ekran" hidden>
+    <h1 id="kurulum-baslik">Kurulum</h1>
+    <div class="kart">
+      <div class="genel-satir">
+        <span>Genel: <span id="genel-metin">—</span></span>
+        <span class="soluk" id="genel-hiz"></span>
+      </div>
+      <div class="cubuk" id="genel-cubuk" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-label="Genel indirme ilerlemesi"><div class="cubuk-dolu"></div></div>
+      <p id="bekleme-satiri" class="uyari-metin" aria-live="polite" hidden></p>
+    </div>
+    <ol id="kurulum-listesi" class="adimlar"></ol>
+    <div id="kurulum-sonuc" class="kutu" role="status" hidden></div>
+    <p class="soluk kucuk">Günlük: <span id="kurulum-gunluk" class="yol">—</span>
+      <button type="button" class="baglanti" id="kurulum-gunluk-goster">Göster</button></p>
+    <div class="dugmeler">
+      <span id="kurulum-sol">
+        <button type="button" class="ikincil" id="kurulum-geri" hidden>← Seçime dön</button>
+      </span>
+      <span class="sag">
+        <button type="button" class="ikincil" id="kurulum-duraklat">Duraklat</button>
+        <button type="button" class="ikincil" id="kurulum-iptal">İptal</button>
+        <button type="button" class="birincil" id="kurulum-surdur" hidden>Sürdür</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- E.6 Bitti -->
+  <section id="ekran-bitti" class="ekran" hidden>
+    <h1 id="bitti-baslik">Kurulum tamamlandı.</h1>
+    <ul id="bitti-listesi" class="tamam-listesi"></ul>
+    <p id="bitti-neden" class="kutu uyari" role="alert" hidden></p>
+    <p class="soluk">Bu bileşenleri sonra “Bileşenler” ekranından ekleyip kaldırabilirsin
+      (kenar çubuğu → Bileşenler, ya da menü <span data-ad="uygulama">Kitapçevir</span> →
+      Bileşenler…).</p>
+    <div class="dugmeler">
+      <button type="button" class="ikincil" id="bitti-bilesenler">Bileşenler</button>
+      <button type="button" class="birincil" id="bitti-ac"><span data-ad="uygulama">Kitapçevir</span>'i aç</button>
+    </div>
+  </section>
+
+  <!-- E.7 Bileşenler (sonradan) -->
+  <section id="ekran-bilesenler" class="ekran" hidden>
+    <h1>Bileşenler</h1>
+    <p id="bilesenler-basari" class="kutu basari" role="status" hidden></p>
+    <div id="bilesenler-hazir-degil" class="kutu uyari" role="alert" hidden>
+      <p id="bilesenler-hazir-neden"></p>
+      <button type="button" class="birincil" id="bilesenler-tamamla">Eksikleri kur</button>
+    </div>
+    <div id="bilesenler-yetim" class="kutu uyari" hidden>
+      <p id="bilesenler-yetim-metin"></p>
+      <ul id="bilesenler-yetim-listesi" class="kucuk yol"></ul>
+      <button type="button" class="ikincil" id="bilesenler-yetim-durdur">Durdur</button>
+    </div>
+    <div class="tablo-kap">
+      <table class="tablo">
+        <thead><tr><th>Bileşen</th><th>Durum</th><th>Sürüm</th><th class="sayi">Diskte</th>
+          <th class="islem">İşlem</th></tr></thead>
+        <tbody id="bilesenler-tablo"></tbody>
+      </table>
+    </div>
+    <div id="bilesenler-panel" class="kart" hidden></div>
+    <p id="bilesenler-ileti" class="kutu uyari" role="alert" hidden></p>
+    <div class="alt-bilgi">
+      <p>Güncelleme: <button type="button" class="ikincil kucuk-dugme" id="guncelleme-denetle">Denetle</button>
+        <span class="soluk">(kendiliğinden denetlenmez)</span>
+        <span id="guncelleme-sonuc" aria-live="polite"></span>
+        <button type="button" class="baglanti" id="guncelleme-sayfa" hidden>Sürüm sayfasını aç</button></p>
+      <p>Kaynak kodu: <button type="button" class="baglanti" id="kaynak-kodu"></button>
+        · <button type="button" class="baglanti" id="bilesenler-lisanslar">Lisanslar</button>
+        · <button type="button" class="baglanti" id="bilesenler-gunlukler">Günlükleri göster</button></p>
+      <p><button type="button" class="ikincil tehlike kucuk-dugme" id="kaldir-hepsi"><span
+        data-ad="uygulama">Kitapçevir</span>'i kaldır…</button></p>
+      <p class="soluk kucuk" id="bilesenler-surum"></p>
+    </div>
+    <div class="dugmeler">
+      <span></span>
+      <button type="button" class="birincil" id="bilesenler-ac" hidden><span data-ad="uygulama">Kitapçevir</span>'i aç</button>
+    </div>
+  </section>
+
+  <!-- G.5 Kaldırıldı -->
+  <section id="ekran-kaldirildi" class="ekran" hidden>
+    <h1><span data-ad="uygulama">Kitapçevir</span> kaldırıldı</h1>
+    <p id="kaldirildi-silinen"></p>
+    <p id="kaldirildi-veri"></p>
+    <p id="kaldirildi-silinmeyen" class="kutu uyari" hidden></p>
+    <p id="kaldirildi-mactex" class="soluk" hidden>MacTeX sistem geneline kurulu olduğu için
+      kaldırılmadı. Kaldırmak için TeX Users Group'un kaldırma yönergesine bak.</p>
+    <div class="kart">
+      <p>Şimdi uygulamayı kapat (⌘Q) ve Uygulamalar klasöründen Çöp Sepeti'ne sürükle.</p>
+      <p class="soluk">Uygulama kodu, Python ve günlükler kapanışta silinir.</p>
+    </div>
+  </section>
+
+  <!-- Uygulama açılırken (Streamlit sağlık denetimi süresince) -->
+  <section id="ekran-acilis" class="ekran" hidden>
+    <p><span data-ad="uygulama">Kitapçevir</span> açılıyor…</p>
+    <p class="soluk kucuk"><button type="button" class="baglanti" id="acilis-bilesenler">Bileşenler</button></p>
+  </section>
+
+  <!-- Açılamayan durum (manifest yok vb.) -->
+  <section id="ekran-sorun" class="ekran" hidden>
+    <h1>Kurulum başlatılamadı</h1>
+    <p id="sorun-iletisi" class="kutu hata"></p>
+    <p class="soluk">Günlük: <span id="sorun-gunluk" class="yol"></span>
+      <button type="button" class="baglanti" id="sorun-gunluk-goster">Göster</button></p>
+  </section>
+</main>
+
+<div id="pencere" class="pencere-arka" hidden>
+  <div class="pencere" role="dialog" aria-modal="true" aria-labelledby="pencere-baslik">
+    <h2 id="pencere-baslik"></h2>
+    <div id="pencere-govde" class="pencere-govde"></div>
+    <div class="dugmeler">
+      <span></span>
+      <span class="sag" id="pencere-dugmeler"></span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

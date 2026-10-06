@@ -1,0 +1,270 @@
+/*
+  Kitapçevir kurulum sihirbazı ve Bileşenler ekranı.
+
+  Görsel dil ana arayüzle (Streamlit, app.py) aynıdır. Kaynaklar:
+  - Renklerin tek kaynağı .streamlit/config.toml [theme]: yönetici onu /tema.css
+    olarak basar (--kc-vurgu, --kc-zemin, --kc-zemin-2, --kc-metin).
+  - app.py'nin CSS dizgisi: soluk metin (U17), çizgiler, kart, düğme ve degrade
+    tonları, logo ve bölüm etiketi (KİTAP ADI, SİSTEM) ölçüleri.
+  - Streamlit 1.55 koyu tema belirteçleri (venv'deki ön yüz paketinden okundu):
+    gövde 16 px / 1,6 satır; app.py'nin "## Çeviri" başlığı = h2 2,25rem;
+    st.container(border=True): 1 px kenar (metin rengi %20), köşe 0,5rem, iç boşluk
+    1rem − 1 px; düğme: en az 2,5rem yükseklik, 0,375rem × 0,75rem iç boşluk, 1rem
+    yazı, 1,6 satır; st.progress: 0,5rem yükseklik, 0,25rem köşe, iz ikincil zemin.
+  Tam birebirlik hedeflenmez (TASARIM A.2-4); Streamlit denetimleri elle
+  benzetildi. Veriye bağlı olmayan süs animasyonu ve geçiş efekti yoktur.
+*/
+:root {
+  /* app.py'den */
+  --kc-soluk: rgba(255, 255, 255, 0.55);       /* --kc-muted (U17: kontrast ~6:1) */
+  --kc-baslik: #ffffff;                         /* h1-h3, logo, dosya adı */
+  --kc-cizgi: rgba(255, 255, 255, 0.08);        /* .file-card kenarı */
+  --kc-cizgi-ince: rgba(255, 255, 255, 0.06);   /* .section-header ve .logo alt çizgisi */
+  --kc-kart: rgba(255, 255, 255, 0.03);         /* .file-card ve ikincil düğme zemini */
+  --kc-dugme-kenar: rgba(255, 255, 255, 0.1);   /* ikincil düğme kenarı */
+  --kc-pasif-zemin: rgba(255, 255, 255, 0.08);  /* pasif birincil düğme */
+  --kc-pasif-metin: rgba(255, 255, 255, 0.35);
+  --kc-golge: 0 4px 15px rgba(99, 102, 241, 0.3);   /* birincil düğme gölgesi */
+  --kc-zemin-son: #12121a;                      /* .stApp degrade bitişi */
+  --kc-vurgu-son: #8b5cf6;                      /* birincil düğme degrade bitişi */
+  --kc-baglanti: #a5b4fc;                       /* .term-badge metni (vurgunun açığı) */
+  --kc-basari: #22c55e;                         /* indirme düğmesi yeşili */
+  --kc-hata: #f87171;
+  --kc-uyari: #fbbf24;
+  /* Streamlit 1.55 koyu tema: metin renginden türetilir (tema değişince izler) */
+  --kc-kenar: color-mix(in srgb, var(--kc-metin) 20%, transparent);         /* borderColor */
+  --kc-soluk-pasif: color-mix(in srgb, var(--kc-metin) 40%, transparent);   /* fadedText40 */
+  /* Streamlit darkenedBgMix15: zemin ile ikincil zeminin karışımı, +0,6 açıklık, %15 */
+  --kc-dugme-uzerinde: rgba(158, 158, 187, 0.15);
+  --kc-odak: 0 0 0 0.2rem color-mix(in srgb, var(--kc-vurgu) 50%, transparent);
+  /* İlerleme izi: Streamlit izi (ikincil zemin) sayfa zemininde ne kadar seçiliyorsa,
+     kartın üstünde de o kadar seçilsin diye kartın zeminine göre açılmış ton */
+  --kc-iz: rgba(255, 255, 255, 0.08);
+  /* Köşe ve ölçüler */
+  --kc-kose: 0.5rem;          /* Streamlit radii.default: kap, uyarı kutusu, panel */
+  --kc-kose-buyuk: 0.75rem;   /* Streamlit radii.xl: iletişim penceresi */
+  --kc-kose-kart: 12px;       /* app.py .file-card */
+  --kc-kose-dugme: 10px;      /* app.py düğmeleri */
+  --kc-kap-ic: calc(1rem - 1px);   /* st.container(border=True) iç boşluğu */
+}
+
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: linear-gradient(180deg, var(--kc-zemin) 0%, var(--kc-zemin-son) 100%);
+  background-attachment: fixed;
+  color: var(--kc-metin);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.kap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+
+.logo {
+  text-align: center; padding: 1.5rem 0 2rem; margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--kc-cizgi-ince);
+}
+.logo-metin { font-size: 1.4rem; font-weight: 600; color: var(--kc-baslik); letter-spacing: -0.03em; }
+.logo-alt {
+  font-size: 0.75rem; color: var(--kc-soluk); margin-top: 0.3rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+h1, h2 { font-weight: 600; letter-spacing: -0.02em; color: var(--kc-baslik); line-height: 1.2; }
+h1 { font-size: 2.25rem; margin: 0 0 1rem; }
+h2 { font-size: 1.25rem; margin: 0 0 0.8rem; }
+p { margin: 0.4rem 0; }
+strong { color: var(--kc-baslik); font-weight: 600; }
+
+.soluk { color: var(--kc-soluk); }
+.kucuk { font-size: 0.875rem; }
+.yol { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.uyari-metin { color: var(--kc-uyari); }
+.hata-metin { color: var(--kc-hata); }
+.basari-metin { color: var(--kc-basari); }
+
+/* Bilgi kartı: app.py .file-card ile aynı */
+.kart {
+  background: var(--kc-kart); border: 1px solid var(--kc-cizgi);
+  border-radius: var(--kc-kose-kart); padding: 1.1rem 1.4rem; margin: 1rem 0;
+}
+/* Uyarı kutuları: Streamlit uyarısının köşesi ve iç boşluğu */
+.kutu { border-radius: var(--kc-kose); padding: 1rem; margin: 1rem 0; border: 1px solid; }
+.kutu.hata { background: rgba(248, 113, 113, 0.08); border-color: rgba(248, 113, 113, 0.35); }
+.kutu.uyari { background: rgba(251, 191, 36, 0.07); border-color: rgba(251, 191, 36, 0.3); }
+.kutu.basari { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.3); }
+.kutu p:first-child { margin-top: 0; }
+.kutu p:last-child { margin-bottom: 0; }
+
+/* Bölüm etiketi: app.py .section-header (KİTAP ADI, SİSTEM) ile aynı */
+.bolum-baslik {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.7rem; font-weight: 600; color: var(--kc-soluk);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin: 1.5rem 0 0.8rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--kc-cizgi-ince);
+}
+/* Sütun başlıkları alttaki çerçeveli listenin sayılarıyla hizalı (kenar + iç boşluk) */
+.bolum-baslik .sutunlar { padding-right: 1rem; }
+.sutunlar { display: flex; gap: 0; }
+.sutunlar span, .boyut { width: 6.5rem; text-align: right; }
+
+/* Satır listeleri: st.container(border=True) gibi ince kenarlı, yuvarlatılmış kap */
+.liste {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--kc-kenar); border-radius: var(--kc-kose); padding: 0 var(--kc-kap-ic);
+  margin-bottom: 1rem;
+}
+.liste:empty { display: none; }
+.kart .liste { border: none; border-radius: 0; padding: 0; margin-bottom: 0; }   /* kart içinde iç içe kap yok */
+.satir {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--kc-cizgi-ince);
+}
+.satir:last-child { border-bottom: none; }
+.satir .govde { flex: 1; min-width: 0; }
+.satir .ad { color: var(--kc-baslik); font-weight: 500; }
+.satir .aciklama { color: var(--kc-soluk); font-size: 0.85rem; }
+.satir .boyutlar { display: flex; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.satir.pasif .ad { color: var(--kc-soluk); }
+.satir input { margin-top: 0.3rem; accent-color: var(--kc-vurgu); width: 1rem; height: 1rem; }
+.satir .not { font-size: 0.875rem; margin-top: 0.25rem; }
+
+.onay-kutusu {
+  display: flex; gap: 0.6rem; align-items: flex-start; margin: 1rem 0;
+  padding: 0.8rem 1rem; border-radius: var(--kc-kose); background: var(--kc-kart);
+  border: 1px solid var(--kc-cizgi);
+}
+.onay-kutusu input { margin-top: 0.3rem; accent-color: var(--kc-vurgu); width: 1rem; height: 1rem; }
+
+.lisans-paneli {
+  margin: 0.6rem 0 0.2rem; padding: 0.8rem 1rem; border-radius: var(--kc-kose);
+  background: rgba(255, 255, 255, 0.02); border: 1px solid var(--kc-cizgi);
+  font-size: 0.9rem;
+}
+.lisans-paneli ul, #lisans-govde ul { padding-left: 1.2rem; margin: 0.4rem 0; }
+.lisans-paneli li, #lisans-govde li { margin: 0.25rem 0; }
+/* Resmî lisans metni sayfanın içinde (KARAR 34): kaydırılabilir kutu */
+.resmi-metin pre.lisans-metni {
+  white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem; line-height: 1.45; margin: 0.4rem 0; padding: 0.6rem 0.8rem;
+  max-height: 40vh; overflow: auto; border-radius: var(--kc-kose);
+  background: rgba(255, 255, 255, 0.03); border: 1px solid var(--kc-cizgi);
+}
+.eksik-onay + .eksik-onay { margin-top: 1rem; }
+.eksik-onay .lisans-paneli { color: var(--kc-metin); }
+
+/* Düğmeler: Streamlit ölçüleri + app.py renkleri (birincil degrade, ikincil ince kenar) */
+.dugmeler {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.dugmeler .sag { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: flex-end; }
+button { font-size: 1rem; cursor: pointer; font-family: inherit; }
+button:disabled { cursor: not-allowed; }
+.birincil, .ikincil {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 2.5rem; padding: 0.375rem 0.75rem; margin: 0;
+  border-radius: var(--kc-kose-dugme); line-height: 1.6; font-weight: 400;
+}
+.birincil {
+  background: linear-gradient(135deg, var(--kc-vurgu) 0%, var(--kc-vurgu-son) 100%);
+  color: #fff; border: none; font-weight: 500; box-shadow: var(--kc-golge);
+}
+.birincil:disabled {
+  background: var(--kc-pasif-zemin); color: var(--kc-pasif-metin); box-shadow: none;
+}
+.ikincil {
+  background: var(--kc-kart); color: var(--kc-metin); border: 1px solid var(--kc-dugme-kenar);
+}
+.ikincil:hover:not(:disabled) { background-color: var(--kc-dugme-uzerinde); }
+.ikincil:disabled { background: transparent; color: var(--kc-soluk-pasif); border-color: var(--kc-kenar); }
+.ikincil.tehlike { border-color: rgba(248, 113, 113, 0.4); color: var(--kc-hata); }
+.kucuk-dugme { min-height: 2rem; padding: 0.25rem 0.625rem; font-size: 0.875rem; line-height: 1.5; }
+.baglanti {
+  background: none; border: none; padding: 0; color: var(--kc-baglanti); text-decoration: underline;
+  text-underline-offset: 2px; font-size: inherit;
+}
+.baglantilar { display: flex; gap: 1.2rem; flex-wrap: wrap; margin: 0.8rem 0; }
+button:focus-visible { outline: none; box-shadow: var(--kc-odak); }
+.baglanti:focus-visible { box-shadow: none; outline: 2px solid var(--kc-vurgu); outline-offset: 2px; }
+input:focus-visible { outline: 2px solid var(--kc-vurgu); outline-offset: 2px; }
+
+/* İlerleme çubuğu (st.progress): genişliği yalnız gerçek bayt oranından (sayfa betiği yazar). */
+.genel-satir { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  font-variant-numeric: tabular-nums; }
+.cubuk { height: 0.5rem; background: var(--kc-iz); border-radius: 0.25rem;
+  overflow: hidden; margin: 0.6rem 0 0.2rem; }
+.cubuk-dolu { height: 100%; width: 0; background: var(--kc-vurgu); border-radius: 0.25rem; }
+.cubuk.kucuk-cubuk { height: 0.25rem; margin: 0.3rem 0 0; }
+
+.adimlar {
+  list-style: none; margin: 1rem 0;
+  border: 1px solid var(--kc-kenar); border-radius: var(--kc-kose); padding: 0 var(--kc-kap-ic);
+}
+.adimlar:empty { display: none; }
+.adimlar > li { padding: 0.75rem 0; border-bottom: 1px solid var(--kc-cizgi-ince); }
+.adimlar > li:last-child { border-bottom: none; }
+.adim-baslik { display: flex; justify-content: space-between; gap: 1rem; }
+.adim-baslik .ad { color: var(--kc-baslik); font-weight: 500; }
+.adim-alt { list-style: none; padding: 0 0 0 1.4rem; margin: 0.3rem 0 0; }
+.adim-alt li { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.875rem;
+  padding: 0.15rem 0; }
+.adim-alt .sag-metin, .adim-baslik .sag-metin { font-variant-numeric: tabular-nums;
+  color: var(--kc-soluk); white-space: nowrap; }
+.oge-satiri { font-size: 0.8rem; color: var(--kc-soluk); padding-left: 1.4rem;
+  overflow-wrap: anywhere; }
+/* Durum işareti: metinle birlikte (renk tek başına bilgi taşımaz). */
+.isaret { display: inline-block; width: 1.1rem; text-align: center; margin-right: 0.3rem; }
+.d-bitti .isaret { color: var(--kc-basari); }
+.d-hata .isaret { color: var(--kc-hata); }
+.d-suruyor .isaret { color: var(--kc-vurgu); }
+.d-bekliyor, .d-iptal { color: var(--kc-soluk); }
+
+.tamam-listesi { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; }
+.tamam-listesi li::before { content: "✓ "; color: var(--kc-basari); }
+
+.tablo-kap {
+  overflow-x: auto;
+  border: 1px solid var(--kc-kenar); border-radius: var(--kc-kose); padding: 0 calc(0.5rem - 1px);
+}
+.tablo { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tablo th {
+  text-align: left; font-size: 0.7rem; font-weight: 600; color: var(--kc-soluk);
+  text-transform: uppercase; letter-spacing: 0.12em; padding: 0.75rem 0.5rem 0.5rem;
+  border-bottom: 1px solid var(--kc-cizgi-ince);
+}
+.tablo td { padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--kc-cizgi-ince);
+  vertical-align: top; }
+.tablo tbody tr:last-child td { border-bottom: none; }
+.tablo .sayi { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tablo .islem { text-align: right; white-space: nowrap; }
+.tablo .islem button + button { margin-left: 0.4rem; }
+.tablo .ad { color: var(--kc-baslik); font-weight: 500; }
+.durum-kurulu { color: var(--kc-basari); }
+.durum-bozuk, .durum-guncellenecek { color: var(--kc-uyari); }
+.durum-eksik { color: var(--kc-soluk); }
+.durum-kuruluyor { color: var(--kc-vurgu); }
+
+.alt-bilgi { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--kc-cizgi-ince);
+  font-size: 0.9rem; }
+
+.pencere-arka {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 10;
+}
+.pencere-arka[hidden] { display: none; }
+.pencere {
+  background: var(--kc-zemin-2); border: 1px solid var(--kc-kenar);
+  border-radius: var(--kc-kose-buyuk);
+  padding: 1.3rem 1.5rem; max-width: 720px; width: 100%; max-height: 85vh;
+  display: flex; flex-direction: column;
+}
+.pencere-govde { overflow: auto; flex: 1; }
+.pencere-govde pre {
+  white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem; line-height: 1.45; margin: 0;
+}
+
+[hidden] { display: none !important; }

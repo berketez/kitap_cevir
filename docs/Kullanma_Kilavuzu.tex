@@ -1,0 +1,1082 @@
+%% Kullanma_Kilavuzu.tex — Kitapçevir Türkçe Kullanma Kılavuzu
+%% Derleme (docs/ klasöründe):  xelatex Kullanma_Kilavuzu.tex   (iki kez, içindekiler için)
+%% Font kurulumu latex_pipeline/templates/turkish_book.tex ile aynı desendedir.
+
+\documentclass[11pt,a4paper]{article}
+
+%% --- Dil & kodlama (XeLaTeX, UTF-8) ---------------------------------------
+\usepackage{polyglossia}
+\setmainlanguage{turkish}
+\setotherlanguage{english}
+
+%% --- Fontlar: dosya adıyla yükle (macOS TeX Live isim-lookup baypası) ----
+\usepackage{fontspec}
+\setmainfont{lmroman10-regular.otf}[
+  BoldFont=lmroman10-bold.otf,
+  ItalicFont=lmroman10-italic.otf,
+  BoldItalicFont=lmroman10-bolditalic.otf]
+\setsansfont{lmsans10-regular.otf}[
+  BoldFont=lmsans10-bold.otf,
+  ItalicFont=lmsans10-oblique.otf]
+\setmonofont{lmmono10-regular.otf}[
+  BoldFont=lmmonolt10-bold.otf,
+  ItalicFont=lmmono10-italic.otf]
+
+%% --- Sayfa düzeni & renkler (arayüzün indigo vurgusu) --------------------
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\definecolor{vurgu}{HTML}{4F46E5}
+\definecolor{koyu}{HTML}{1F2937}
+\definecolor{acikgri}{HTML}{F3F4F6}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=3pt}
+\setlength{\emergencystretch}{3em}  % bölünemeyen daktilo yazısı taşmasın
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+%% --- Kod/komut kutuları ---------------------------------------------------
+%% Türkçe polyglossia '=' ve ':' önüne boşluk ekler (XeTeX interchar); komut
+%% kutusunda bu kapatılır, komutlar kopyalanınca aynen çalışsın.
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{komut}{
+  colback=koyu, colframe=koyu, coltext=white,
+  fontupper={\ttfamily\small\XeTeXinterchartokenstate=0\relax}, boxrule=0pt, arc=3pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt, breakable}
+\newtcolorbox{notkutu}[1][]{
+  colback=acikgri, colframe=vurgu, coltext=koyu,
+  boxrule=0pt, leftrule=3pt, arc=1pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt, breakable, #1}
+
+%% --- Başlık biçimleri -----------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{vurgu}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{koyu}}{\thesubsection}{0.5em}{}
+\titlespacing{\section}{0pt}{16pt}{6pt}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=vurgu, urlcolor=vurgu,
+  pdftitle={Kitapçevir Kullanma Kılavuzu}, pdflang={tr}}
+
+%% Arayüzdeki düğme ve etiketleri metin içinde belirginleştirir.
+\newcommand{\dugme}[1]{\textsf{\bfseries #1}}
+\newcommand{\dosya}[1]{\texttt{#1}}
+%% Menü yolu oku (Kitapçevir → Bileşenler…).
+\newcommand{\ok}{\(\rightarrow\)}
+
+\begin{document}
+
+%% ===================== KAPAK ============================================
+\begin{titlepage}
+\centering
+\vspace*{3.5cm}
+{\Huge\bfseries\color{vurgu} Kitapçevir\par}
+\vspace{0.6cm}
+{\Large Akademik Kitap Çeviri ve Dizgi Sistemi\par}
+\vspace{0.3cm}
+{\large PDF/EPUB \(\rightarrow\) Türkçe PDF\par}
+\vspace{2cm}
+{\huge\bfseries Kullanma Kılavuzu\par}
+\vspace{1.5cm}
+{\large Formülleri, şekilleri ve çapraz referansları koruyarak çevirir.\par}
+\vfill
+{\small Bu kılavuz kurulumu, arayüzü ve iki çeviri yolunu\\
+(\emph{PDF'den TeX çıkar} ve \emph{Yerel model ile çevir}) adım adım anlatır.\par}
+\vspace{0.5cm}
+{\small Durum: bakım modu --- yalnız hata düzeltmeleri.\par}
+\vspace{0.3cm}
+{\small Ekim 2026\par}
+\vspace{1cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%% ===================== GİRİŞ ============================================
+\section{Kitapçevir Nedir?}
+
+Kitapçevir, akademik kitapları (fizik, mühendislik, makine öğrenmesi vb.)
+Türkçeye çevirmek ve yeniden dizmek için bir araçtır. Kitabı LaTeX'e
+dönüştürür; matematiksel formüller, denklem numaraları, şekiller, kaynakça ve
+çapraz referanslar çeviri boyunca korunur, yalnızca doğal dildeki metin
+çevrilir. Sonuç, XeLaTeX ile dizilmiş Türkçe bir PDF'dir (EPUB kaynaklı kitapta
+Türkçe EPUB de üretilir).
+
+\begin{notkutu}
+\textbf{Kilit fikir:} Metin çevrilir, \emph{teknik iskelet korunur}. Kaynak
+kitapta bir denklem, bir şekil, bir referans neredeyse Türkçe çıktıda da tam
+olarak oradadır. Çeviri kayıpsız hedeflenir: hiçbir cümle, dipnot ya da tablo
+hücresi bilerek atlanmaz.
+\end{notkutu}
+
+\begin{notkutu}
+\textbf{Platform:} Kitapçevir yalnızca \textbf{macOS çalışan, Apple Silicon
+(M serisi) işlemcili bir Mac'te} çalışır; uygulama macOS 14 ya da sonrasını
+ister. Arayüz başka bir sistemde (Intel Mac, Linux, Windows) açılmaz.
+\end{notkutu}
+
+\begin{notkutu}
+\textbf{Durum:} Bakım modu --- yalnız hata düzeltmeleri.
+\end{notkutu}
+
+%% ===================== İKİ YOL ==========================================
+\section{İki Çeviri Yolu}\label{sec:ikiyol}
+
+Arayüzde yan yana iki kart bulunur. İkisi de aynı kaynak dilleri Türkçeye
+çevirir; hangisini seçeceğiniz kalite beklentinize ve bilgisayarınızın
+donanımına bağlıdır. Hedef dil her zaman Türkçedir.
+
+\vspace{6pt}
+\renewcommand{\arraystretch}{1.4}
+\noindent\begin{tabular}{@{}L{3.0cm}L{6.1cm}L{5.8cm}@{}}
+\toprule
+ & \textbf{\color{vurgu}PDF'den TeX çıkar} (önerilen) & \textbf{Yerel model ile çevir} (Beta) \\
+\midrule
+\textbf{Çeviriyi kim yapar} & Siz ya da yapay zekâ asistanınız (ör.\ Claude Code) & Bu Mac'teki yerel çeviri modeli; önerilen model HY-MT 1.5 7B (MLX). MLX klasörü, Ollama, LM Studio ya da GGUF dosyasındaki bir model de seçilebilir (beta, daha az sınandı) \\
+\textbf{Kaynak dil} & İngilizce, Almanca, Rusça, Fransızca, İspanyolca, İtalyanca & İngilizce, Almanca, Rusça, Fransızca, İspanyolca, İtalyanca (İngilizceden başka kaynak dillerde çeviri kalitesi seçilen modele bağlıdır; HY-MT 1.5 7B ile bu dillerden yalnız kısa Almanca ve Rusça deneme belgeleri sınandı) \\
+\textbf{Çeviri modeli} & Gerekmez & Gerekir (HY-MT 1.5 7B diskte yaklaşık 15 GB) \\
+\textbf{Donanım} & Her Apple Silicon Mac & Güçlü donanım ister (Bölüm~\ref{sec:donanim}) \\
+\textbf{Kalite} & Çeviriyi yapana bağlı; en iyi sonuç bu yoldadır & Ön okuma / taslak kalitesi \\
+\textbf{Akış} & Uygulama TeX'i çıkarır, siz çevirirsiniz, uygulama PDF'yi dizer & Uygulama baştan sona kendisi çevirir ve dizer \\
+\bottomrule
+\end{tabular}
+\vspace{8pt}
+
+\begin{notkutu}
+\textbf{Önerilen: PDF'den TeX çıkar.} Çeviri modeli gerektirmez ve en iyi
+sonucu verir. Çeviriyi bir yapay zekâ asistanına yaptırmak için arayüz, TeX
+çıkarıldıktan sonra Claude Code'a verilecek hazır istemi gösterir
+(bkz.\ Bölüm~\ref{sec:claude}).
+\end{notkutu}
+
+\begin{notkutu}
+\textbf{Yerel model hakkında dürüst not:} ``Yerel model ile çevir'' beta
+aşamasındadır: çeviri modelin gücüne bağlıdır ve çıktı gözden geçirilmemiş bir
+taslaktır. Eylül 2026'daki karşılaştırmalı denemede bu yolun çevirisi, TeX
+yolunda yapay zekâ asistanıyla yapılan çeviriden belirgin biçimde düşük
+kalitede çıktı. Bu yol gözetimsiz ve çevrim dışı çalışır; ön okuma ve taslak
+için uygundur. Yerel model kullanacaksanız en çok sınanan model olan
+\textbf{HY-MT 1.5 7B}'yi seçmenizi öneririz.
+\end{notkutu}
+
+Bu yolun PDF ve EPUB çıktısının başında kısa bir \textbf{makine çevirisi
+künyesi} bulunur: metnin bu bilgisayardaki hangi yerel modelle çevrildiğini,
+gözden geçirilmemiş bir taslak olduğunu, kaynak dili ve çeviri tarihini yazar.
+``PDF'den TeX çıkar'' çıktısında künye yoktur.
+
+Her iki yol da aynı iskeleti paylaşır: çıkarım (PDF için Marker, EPUB için
+EPUB ayrıştırıcı), Markdown\(\rightarrow\)LaTeX dönüşümü, sanitizer, kalite
+denetimi (QC), AutoFix ve XeLaTeX dizgisi ortaktır. Tek fark, çeviri adımını
+kimin yaptığıdır. Kitabın ilk sayfası tam sayfa görselli bir kapaksa çıktıya
+kapak olarak konur; metin sayfası ya da boş sayfa kapak sayılmaz.
+
+%% ===================== KURULUM ==========================================
+\section{Kurulum}
+
+İki kurulum yolu vardır: \textbf{uygulama (DMG) ile} (Bölüm~\ref{sec:dmg}--\ref{sec:veri};
+terminal gerekmez) ve \textbf{kaynak koddan} (Bölüm~\ref{sec:kaynak};
+geliştiriciler ve komut satırı kullanımı için).
+
+\subsection{Gereksinimler}
+\begin{itemize}
+  \item \textbf{Bilgisayar:} Apple Silicon (M serisi) işlemcili, macOS 14 ya
+        da sonrası çalışan bir Mac.
+  \item \textbf{İnternet:} Kurulum sırasında bileşenler indirilir.
+        Uygulamanın TeX çıkarma, yerel modelle çeviri ve dizgi adımları
+        çevrim dışı çalışır (Hafif TeX yeni bir LaTeX paketine ilk kez gerek
+        duyduğunda onu indirir).
+  \item \textbf{Disk:} PDF desteği (Marker, torch ve Marker modelleri) birkaç
+        GB yer tutar; Marker modelleri tek başına yaklaşık 3,5 GB'tır. Yerel
+        model kullanılacaksa model için ayrıca yer gerekir (HY-MT 1.5 7B
+        yaklaşık 15 GB; başka bir model seçilirse o modelin boyutu). Kurulum
+        sihirbazı seçilen bileşenlerin boyutunu gösterir, boş diski ölçer ve
+        yer yetmiyorsa kurulumu başlatmaz.
+  \item \textbf{Bellek (yalnızca yerel model için):} Model çeviri sırasında
+        bütünüyle belleğe yüklenir; uygulama bu Mac'in belleğini ölçüp modelin
+        sığıp sığmadığına kendisi bakar (Bölüm~\ref{sec:donanim}). Ollama ya da
+        LM Studio'da yüklü modeller de aynı belleği kullanır.
+  \item \textbf{Kaynak koddan kurulumda ayrıca:} arm64 Python 3.12
+        (Rosetta altında çalışan x86\_64 Python kabul edilmez) ve XeLaTeX
+        içeren bir TeX dağıtımı (MacTeX).
+\end{itemize}
+
+\subsection{Donanım gereksinimi}\label{sec:donanim}
+``PDF'den TeX çıkar'' her Apple Silicon Mac'te çalışır. ``Yerel model ile
+çevir'' \textbf{güçlü donanım ister}: önerilen HY-MT 1.5 7B ile 20 sayfalık bir
+kitabın çevirisinde ölçülen tepe bellek kullanımı yaklaşık 26 GB'tı (36 GB
+belleği olan bir Mac'te, 29 Eylül 2026).
+
+Uygulama bu Mac'in belleğini \textbf{ölçer}: MLX'in bildirdiği, Metal'in
+önerdiği çalışma kümesi (\dosya{max\_recommended\_working\_set\_size};
+belleğin kabaca üçte ikisi ile dörtte üçü) ``kullanılabilir bellek''tir.
+MLX bu değeri veremezse toplam bellekten kaynaklı bir oranla hesaplanır ve bu
+durum kartta yazar; hiç ölçülemezse kart açık kalır ve ``bellek ölçülemedi''
+uyarısı çıkar. Sol kenardaki \dugme{Sistem} satırı çipi ve kullanılabilir
+belleği gösterir.
+
+Bir modelin tahmini gereksinimi üç kalemin toplamıdır: modelin diskte (ya da
+sunucuda) ölçülen \textbf{ağırlığı}, modelin kendi üst verisinden (katman,
+KV başlığı, başlık boyutu) kesin formülle hesaplanan \textbf{KV önbelleği}
+(düşünerek çeviren modelde parça başına düşünme payı da eklenir) ve ağırlığın
+\%25'i kadar \textbf{çalışma payı} (ölçülmemiş, kaynaklı tek varsayım).
+
+\begin{itemize}
+  \item \textbf{Genel kapı:} Bu Mac 4 bit nicemlenmiş bir 7B modeli
+        (referans model) toplu iş 1 ile çalıştıramıyorsa ``Yerel model ile
+        çevir'' kartı kapalıdır ve neden sayılarıyla yazar: ``Bu Mac yerel
+        model için yetersiz: en az \ldots{} GB kullanılabilir bellek gerekir,
+        bu Mac'te \ldots{} GB.'' Formüle göre bu 8 GB'lık Mac'lerde olur.
+        ``PDF'den TeX çıkar'' kartı normal çalışır. Kurulum sihirbazında da
+        HY-MT ve GGUF seçenekleri bu durumda kapalıdır.
+  \item \textbf{Model başına kapı:} Toplu iş 1 ile bile sığmayan model
+        listede ``bu Mac'e sığmaz (gerekli \textasciitilde\ldots{} GB,
+        kullanılabilir \ldots{} GB)'' diye görünür; seçilirse \dugme{Çevir}
+        soluk kalır. Formüle göre HY-MT 1.5 7B 16 GB'lık Mac'e sığmaz.
+  \item \textbf{Uyarlanır toplu iş:} Bellek darsa aynı anda çevrilen parça
+        sayısı sığacak kadar küçültülür; bellek yetiyorsa hiçbir ayar
+        değişmez.
+\end{itemize}
+Komut satırı aynı hükmü verir: kart kapalıysa ya da model sığmıyorsa
+\dosya{translate\_book.py} çıkarımdan önce aynı iletiyle \textbf{çıkış kodu
+5} verir. Ölçüm, formül ve her varsayımın kaynağı:
+\dosya{docs/DONANIM\_VARSAYIMLARI.md}.
+
+\subsection{Uygulamayı indirin ve taşıyın}\label{sec:dmg}
+\begin{enumerate}
+  \item Deponun sürüm sayfasından
+        (\url{https://github.com/berketez/kitap_cevir/releases/latest})
+        uygulamanın DMG dosyasını (\dosya{Kitapcevir-\allowbreak<sürüm>.dmg}) indirin.
+  \item DMG'yi açın ve \textbf{Kitapçevir} simgesini \textbf{Uygulamalar}
+        (Applications) kısayolunun üzerine sürükleyin.
+  \item Uygulamayı \textbf{Uygulamalar} klasöründen açın. DMG'nin içinden ya
+        da taşımadan açarsanız açılış ekranı ``Kitapçevir'i Uygulamalar
+        klasörüne taşıyıp oradan açman önerilir.'' der.
+\end{enumerate}
+
+Uygulama kendi verisini ve bileşenlerini
+\dosya{\textasciitilde/Library/\allowbreak Application Support/\allowbreak Kitapçevir/}
+altında tutar (Bölüm~\ref{sec:veri}); günlükler
+\dosya{\textasciitilde/Library/\allowbreak Logs/\allowbreak Kitapçevir/}
+altındadır. Uygulama paketinin içine hiçbir şey yazılmaz.
+
+\subsection{İlk açılış: imzasız uygulamayı açmak}\label{sec:ilkacilis}
+Kitapçevir imzasız dağıtılır: Apple geliştirici kimliğiyle imzalanmamış ve
+Apple'a onaylatılmamıştır. Bu yüzden macOS ilk açılışta uygulamayı engeller.
+Onay bir kez verilir; sonraki açılışlar normaldir.
+
+\begin{itemize}
+  \item \textbf{Finder'da sağ tık \ok{} Aç:} Uygulamalar klasöründe
+        Kitapçevir'e sağ tıklayın (ya da Control tuşuyla tıklayın),
+        \dugme{Aç}'ı seçin ve açılan pencerede yeniden \dugme{Aç}'a basın. Bu
+        yol macOS 14'te çalışır.
+  \item \textbf{Gerekirse Sistem Ayarları \ok{} Gizlilik ve Güvenlik \ok{}
+        Yine de Aç:} macOS 15 ve sonrasında sağ tık yolu kaldırıldı.
+        Uygulamayı açmayı bir kez deneyin; engellendikten sonra
+        \textbf{Sistem Ayarları \ok{} Gizlilik ve Güvenlik} bölümünde,
+        Güvenlik başlığı altında beliren \dugme{Yine de Aç} düğmesine basın ve
+        giriş parolanızı girin. Düğme açma denemesinden sonra yaklaşık bir saat
+        görünür.
+\end{itemize}
+
+\subsection{Kurulum sihirbazı}
+Sihirbaz uygulamanın içindedir. Ekrandaki her sayı (boyut, hız, kalan süre)
+gerçek ölçümden gelir; bilinmeyen değer ``---'' olarak gösterilir. Ekranlar
+sırayla:
+
+\begin{enumerate}
+  \item \textbf{Kurulum (hoş geldin):} Bu Mac'in çipi, macOS sürümü,
+        kullanılabilir belleği ve boş diski ile internet bağlantısı.
+        Bileşenler yayıncılarının kendi sunucularından (ör.\ GitHub, PyPI,
+        Hugging Face, datalab.to) doğrudan iner; Kitapçevir bu dosyaları
+        barındırmaz.
+  \item \textbf{Lisanslar:} Kitapçevir'in kendi lisansı (GNU GPL 3.0) ve PDF
+        desteğinin yapay zekâ modelleri için Datalab model lisansının resmî
+        metni ve bağlantısı. Datalab lisansı kabul edilmeden kurulum
+        sürdürülemez: PDF desteği zorunlu bileşendir ve bu modeller olmadan
+        çalışmaz (bileşenlerin lisansları: Bölüm~\ref{sec:lisans}).
+  \item \textbf{Bileşenler:} Ne kurulacağını seçersiniz (aşağıdaki tablo).
+        Ollama ya da LM Studio kuruluysa Kitapçevir onları kendisi bulur;
+        burada kurulmaz.
+  \item \textbf{Özet:} Kurulacaklar, toplam indirme, diskte kaplayacağı yer,
+        boş disk ve kurulum yeri. Boş disk yetmiyorsa ne kadar daha gerektiği
+        yazar.
+  \item \textbf{Kurulum:} Genel ilerleme yalnızca indirmede, gerçek baytlarla
+        gösterilir (hız ve tahmini kalan süreyle); kurma adımlarında çubuk
+        yoktur, geçen süre yazar. \dugme{Duraklat}, \dugme{İptal} ve
+        \dugme{Sürdür} düğmeleri vardır: yarım inen dosyalar saklanır, kurulum
+        kaldığı yerden sürer.
+  \item \textbf{Kurulum tamamlandı:} \dugme{Kitapçevir'i aç} düğmesiyle
+        arayüz aynı pencerede açılır.
+\end{enumerate}
+
+\vspace{4pt}
+\renewcommand{\arraystretch}{1.3}
+\noindent\begin{tabular}{@{}L{3.3cm}L{3.5cm}L{8.2cm}@{}}
+\toprule
+\textbf{Bölüm} & \textbf{Bileşen} & \textbf{Not} \\
+\midrule
+Zorunlu (kilitli) & Çekirdek & Python, arayüz, EPUB yolu, derleme \\
+ & MLX & Apple Silicon hesaplama kitaplığı \\
+ & PDF desteği & Marker + torch + Marker modelleri (Datalab lisansı) \\
+\midrule
+TeX dağıtımı (birini seçin) & Hafif TeX (tectonic) & Varsayılan. Paketleri gerektikçe indirir; kurulumda şablon bir kez derlenerek ısıtılır \\
+ & Tam TeX (MacTeX) & Büyük indirme; macOS Yükleyici açılır ve yönetici parolası ister \\
+ & Kurulu olanı kullan & Yalnızca bu Mac'te XeLaTeX içeren bir TeX bulunursa görünür; seçilmeden önce şablon onunla derlenerek sınanır \\
+\midrule
+İsteğe bağlı & HY-MT 1.5 7B & Önerilen yerel çeviri modeli (yaklaşık 15 GB). Tencent lisansının kabulü gerekir; bu Mac'e sığmıyorsa seçilemez ve nedeni yazar \\
+ & GGUF desteği & llama-cpp-python (Metal); GGUF dosyalarını doğrudan açmak için \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+
+Kurulum sürerken uygulamayı kapatırsanız indirilen kısım saklanır ve bir
+sonraki açılışta kurulum kaldığı yerden sürer.
+
+\subsection{Bileşenler ekranı, güncelleme ve kaldırma}\label{sec:bilesenler}
+\textbf{Kitapçevir \ok{} Bileşenler\ldots} menüsü (Komut + virgül) ya da
+arayüzün sol kenarındaki \dugme{Bileşenler} bağlantısı Bileşenler ekranını
+açar. Tabloda her bileşenin durumu, sürümü ve diskte kapladığı yer
+(gerçek ölçüm) yazar.
+
+\begin{itemize}
+  \item \dugme{Onar}: bileşenin dosyalarını SHA-256 ile doğrular, bozuk ya da
+        eksik olanları yeniden indirir ve yeniden kurar.
+  \item \dugme{İndir} / \dugme{Kaldır}: HY-MT 1.5 7B ve GGUF desteği sonradan
+        indirilebilir ya da kaldırılabilir. Kaldırırken kitaplarınız ve çeviri
+        belleğiniz silinmez.
+  \item \dugme{Türünü değiştir\ldots}: Hafif TeX, Tam TeX ve kurulu TeX
+        arasında geçiş.
+  \item \dugme{Denetle}: yeni sürüm yalnızca bu düğmeyle denetlenir,
+        kendiliğinden denetlenmez ve kurulmaz. Yeni sürüm varsa
+        \dugme{Sürüm sayfasını aç} sürüm sayfasını açar; yeni DMG'deki
+        uygulamayı eskisinin üzerine sürüklersiniz. Kitaplarınız ve
+        ayarlarınız uygulamadan ayrı tutulduğu için güncellemeden etkilenmez.
+  \item \dugme{Kaynak kodu}, \dugme{Lisanslar} ve \dugme{Günlükleri göster}
+        bağlantıları.
+  \item \dugme{Kitapçevir'i kaldır\ldots}: silinecek klasörler boyutlarıyla
+        listelenir. Varsayılan olarak \dosya{veri/} klasörü \textbf{korunur}:
+        kitaplarınız, çeviri belleğiniz ve modeller (sihirbazın kurduğu
+        HY-MT 1.5 7B dahil; panel adını ve diskte kapladığı gerçek yeri
+        ayrıca gösterir). Yalnız HY-MT'yi silmek için ``Şunu da sil: HY-MT
+        \ldots'' kutusunu, verinin tamamını silmek için ``Kitaplarımı,
+        belleği ve modeller klasörünün tamamını da sil'' kutusunu
+        işaretleyin. Kaldırma bitince uygulamayı kapatıp (Komut + Q) Uygulamalar
+        klasöründen Çöp Sepeti'ne sürüklersiniz. MacTeX sistem geneline
+        kurulduğu için kaldırılmaz; kaldırmak için TeX Users Group'un kaldırma
+        yönergesine bakın.
+\end{itemize}
+
+Bir iş sürerken bileşen değiştirilemez: önce işin bitmesini bekleyin ya da
+işi iptal edin.
+
+\textbf{Elle kaldırma} (uygulama açılamıyorsa): şu klasörleri silin, sonra
+uygulamayı Çöp Sepeti'ne sürükleyin. Kitaplarınızı saklamak istiyorsanız önce
+\dosya{veri/} alt klasörünü başka bir yere taşıyın.
+\begin{itemize}
+  \item \dosya{\textasciitilde/Library/\allowbreak Application Support/\allowbreak Kitapçevir/}
+  \item \dosya{\textasciitilde/Library/\allowbreak Logs/\allowbreak Kitapçevir/}
+  \item varsa
+        \dosya{\textasciitilde/Library/\allowbreak WebKit/\allowbreak io.github.\allowbreak berketez.\allowbreak kitapcevir},
+        \dosya{\textasciitilde/Library/\allowbreak Caches/\allowbreak io.github.\allowbreak berketez.\allowbreak kitapcevir},
+        \dosya{\textasciitilde/Library/\allowbreak HTTPStorages/\allowbreak io.github.\allowbreak berketez.\allowbreak kitapcevir},
+        \dosya{\textasciitilde/Library/\allowbreak Preferences/\allowbreak io.github.\allowbreak berketez.\allowbreak kitapcevir.plist} ve
+        \dosya{\textasciitilde/Library/\allowbreak Saved Application State/\allowbreak io.github.\allowbreak berketez.\allowbreak kitapcevir.savedState}
+\end{itemize}
+
+\subsection{Veri klasörü: kitaplar, modeller, çeviri belleği}\label{sec:veri}
+DMG kurulumunda kullanıcı verisi uygulamanın kodundan ayrı, tek bir kökte
+durur:
+\dosya{\textasciitilde/Library/\allowbreak Application Support/\allowbreak Kitapçevir/\allowbreak veri/}.
+Kaynak koddan kurulumda aynı klasörler proje klasörünün içindedir.
+
+\vspace{4pt}
+\renewcommand{\arraystretch}{1.3}
+\noindent\begin{tabular}{@{}L{5.6cm}L{4.6cm}L{4.8cm}@{}}
+\toprule
+\textbf{İçerik} & \textbf{DMG kurulumu} (\dosya{Kitapçevir/} altında) & \textbf{Kaynak koddan} (proje klasöründe) \\
+\midrule
+Kitap klasörleri & \dosya{veri/output/\allowbreak<kitap\_adı>/} & \dosya{output/\allowbreak<kitap\_adı>/} \\
+Kendi eklediğiniz modeller (MLX klasörleri, GGUF dosyaları); HY-MT de buraya iner & \dosya{veri/models/} & \dosya{models/} \\
+Çeviri belleği & \dosya{veri/data/\allowbreak translation\_memory.db} & \dosya{data/\allowbreak translation\_memory.db} \\
+İsteğe bağlı ayar dosyaları & \dosya{veri/config/} & \dosya{config/} \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+
+Arayüzdeki \dugme{Klasörü aç} düğmesi kitabın klasörünü doğrudan açar. Bu
+kılavuzda \dosya{models/} ve \dosya{config/} dendiğinde DMG kurulumunda
+\dosya{veri/models/} ve \dosya{veri/config/} anlaşılmalıdır.
+
+\subsection{Kaynak koddan kurulum (geliştiriciler için)}\label{sec:kaynak}
+\begin{komut}
+git clone https://github.com/berketez/kitap\_cevir.git kitapcevir\\
+cd kitapcevir\\
+python3.12 -m venv venv\\
+source venv/bin/activate\\
+pip install --no-deps -r requirements.txt\\
+brew install --cask mactex \ \ \# XeLaTeX yoksa
+\end{komut}
+
+Sanal ortamın adı \dosya{venv} olmalıdır: arayüzü başlatma komutu bu adı
+kullanır. PDF çıkarım motoru Marker, ilk PDF'de kendi modellerini (yaklaşık
+3,5 GB) kendiliğinden indirir; bu yüzden ilk PDF her zamankinden uzun sürer.
+Bu modellerin ağırlıkları Datalab'ın model lisansıyla sunulur; metin:
+\url{https://github.com/datalab-to/marker} (\dosya{MODEL\_LICENSE}).
+
+\textbf{Yalnızca ``Yerel model ile çevir'' için} önerilen modeli indirip MLX
+biçimine dönüştürün (yaklaşık 15 GB):
+
+\begin{komut}
+./venv/bin/mlx\_lm.convert --hf-path tencent/HY-MT1.5-7B \textbackslash\\
+\ \ --mlx-path models/hymt-7b-mlx
+\end{komut}
+
+\begin{notkutu}
+\textbf{Yalnızca TeX yolunu kullanacaksanız bu adımı atlayın.} TeX yolu
+çeviri modeli gerektirmez; PDF çıkarımı (Marker) ve XeLaTeX yeterlidir.
+Başka bir model kullanacaksanız (MLX klasörü, Ollama, LM Studio ya da GGUF
+dosyası) HY-MT'yi indirmek gerekmez; hazırlık Bölüm~\ref{sec:modeller}'de
+anlatılır.
+\end{notkutu}
+
+%% ===================== ARAYÜZ ===========================================
+\section{Uygulamayı Başlatma}
+
+\textbf{DMG kurulumunda} Uygulamalar klasöründen \textbf{Kitapçevir}'i açın.
+Arayüz uygulamanın kendi penceresinde açılır; \textbf{Görünüm \ok{} Tarayıcıda
+Aç} aynı sayfayı varsayılan tarayıcıda açar. Uygulamayı Komut + Q ile kapatın;
+bir iş sürerken kapatırsanız onay istenir ve iş iptal edilir.
+
+\textbf{Kaynak koddan} proje klasöründe şu komutu çalıştırın:
+
+\begin{komut}
+./venv/bin/streamlit run app.py
+\end{komut}
+
+Arayüz tarayıcıda \dosya{http://127.0.0.1:8501} adresinde açılır (tarayıcı
+kendiliğinden açılmazsa terminalde yazan adresi kullanın). Kapatmak için
+terminalde \texttt{Ctrl+C}'ye basın. İki kurulumda da arayüz yalnızca bu
+bilgisayardan erişilebilir; en büyük yükleme boyutu 500 MB'tır.
+
+\subsection{Arayüzün bölümleri}
+
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabular}{@{}L{3.2cm}L{12.2cm}@{}}
+\toprule
+\textbf{Bölge} & \textbf{İçerik} \\
+\midrule
+\textbf{Sol kenar} & \dugme{Kitap adı} (isteğe bağlı): çıktı klasörünün adı.
+Boş bırakılırsa dosya adından çıkarılır; aynı adda başka bir kitap varsa
+ayırmak için kullanılır. \dugme{Sistem}: ``macOS · Apple Silicon'', çip ve
+kullanılabilir bellek, seçili çeviri modelinin hazır olup olmadığı. DMG
+kurulumunda \dugme{Bileşenler} bağlantısı (Bölüm~\ref{sec:bilesenler}).
+\dugme{Hakkında}: proje ve Tencent'le bağlantısızlık beyanı,
+\dugme{Kaynak kodu} bağlantısı. \\
+\textbf{Orta, ``Çeviri''} & Kitap yükleme alanı (PDF ya da EPUB). Kitap
+yüklenince dosya kartı (biçim, boyut, PDF'de sayfa sayısı) ve iki çeviri
+kartı görünür: \dugme{PDF'den TeX çıkar} ve \dugme{Yerel model ile çevir}
+(Beta). İş sürerken ilerleme paneli, iş bitince sonuç burada görünür. \\
+\textbf{Sağ, ``Araçlar''} & \dugme{Terimler}, \dugme{Bellek} ve
+\dugme{Karşılaştırma} sekmeleri (bkz.\ Bölüm~\ref{sec:araclar}). \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+
+Aynı anda tek iş çalışır; bir iş sürerken çeviri düğmeleri, kitap adı ve
+kitap yükleme kapalıdır. Sayfayı yenileseniz de çalışan iş sürer ve ilerlemesi
+görünmeye devam eder.
+
+%% ===================== TEX YOLU =========================================
+\section{PDF'den TeX Çıkar --- Adım Adım (Önerilen)}
+
+Bu yol üç adımdır: \textbf{çıkar} \(\rightarrow\) \textbf{çevir}
+\(\rightarrow\) \textbf{derle}. Çeviri modeli gerekmez.
+
+\subsection{Adım 1 --- TeX'i çıkarın}
+\begin{enumerate}
+  \item Orta alana kitabı (PDF ya da EPUB) yükleyin. İsterseniz önce sol
+        kenarda kitap adını yazın.
+  \item \dugme{PDF'den TeX çıkar} kartında \dugme{1 · TeX'i çıkar} düğmesine
+        basın.
+  \item İş bitince ``TeX çıkarıldı'' iletisi ve \dugme{EXPORT.tex'i indir}
+        düğmesi çıkar. Dosya kitap klasöründe \dosya{EXPORT.tex} olarak
+        kaydedilmiştir (Bölüm~\ref{sec:veri}).
+  \item Kartta beliren \dugme{Klasörü aç} düğmesi kitap klasörünü Finder'da
+        açar. Kart ayrıca çevrilecek dosyanın ve bu kitaba özel çeviri
+        talimatının tam yolunu gösterir.
+\end{enumerate}
+
+\begin{notkutu}
+\textbf{\dosya{EXPORT.tex}'in başındaki \dosya{\% KITAPCEVIR-META} satırlarını
+silmeyin.} Derleme adımı kitabı bu satırlarla tanır; dosyayı başka bir
+klasöre taşısanız bile kimlik bu sayede kaybolmaz.
+\end{notkutu}
+
+\subsection{Adım 2 --- EXPORT.tex'i çevirin}
+Çeviriyi ister siz yapın ister bir yapay zekâ asistanı. Çevrilmiş dosyayı
+\dosya{EXPORT\_TR.tex} adıyla \textbf{aynı klasöre} kaydedin. Çevirirken şu
+kurallara uyulur:
+
+\begin{itemize}
+  \item Yalnızca \textbf{doğal dildeki metin ve başlıklar} çevrilir.
+  \item \textbf{Dokunulmaz:} matematik (\dosya{\$...\$},
+        \dosya{\textbackslash begin\{equation\}}),
+        \dosya{\textbackslash ref}/\dosya{\textbackslash cite}/\dosya{\textbackslash label}
+        argümanları, şekiller, dosya yolları, ortam adları ve
+        \dosya{\% KITAPCEVIR-META} başlığı.
+  \item \textbf{Hiçbir metin atlanmaz:} her cümle, dipnot, tablo hücresi ve
+        şekil altyazısı çevrilir.
+  \item Bölüm ve ortam sayısı kaynakla \textbf{birebir aynı} kalır. Derleme
+        adımı bölüm sayısını kaynakla karşılaştırır ve uyuşmazlıkta uyarır.
+  \item Büyük kitaplar bölüm sınırlarından parçalanır (parça başına en çok
+        yaklaşık 80 KB önerilir); tüm parçalar aynı terim listesini kullanır.
+  \item Başlıklara ``Bölüm X'' yazılmaz; şablon bölüm numarasını kendisi ekler.
+  \item Türkçe karakterler doğru yazılır (ç, ğ, ı, İ, ö, ş, ü); dosya
+        \textbf{UTF-8} olarak kaydedilir.
+\end{itemize}
+
+\subsection{Adım 3 --- Derleyin}
+\begin{enumerate}
+  \item \dugme{2 · Çevrilmiş TeX'i derle} düğmesine basın. Bu düğme, klasörde
+        \dosya{EXPORT\_TR.tex} görülene kadar soluk kalır. Dosya
+        kaydedildikten sonra düğme birkaç saniye içinde kendiliğinden açılır;
+        açılmazsa sol kenardaki \dugme{Kitap adı}'nın TeX'i çıkarırken
+        kullandığınızla aynı olduğuna bakın.
+  \item İş bitince \dugme{PDF'yi aç} (PDF'yi varsayılan uygulamayla açar) ve
+        \dugme{İndir} düğmeleri çıkar. Türkçe PDF kitap klasörüne
+        \dosya{<kitap\_adı>\_TR.pdf} olarak da kaydedilmiştir.
+\end{enumerate}
+
+Derleme \emph{manuel çeviri kipinde} çalışır: yapısal denetimler (ortam
+dengesi, yer tutucu bütünlüğü, derleme) aynen yapılır, ama çevirmenin sözcük
+tercihlerinin üzerine yazılmaz.
+
+\subsection{Yapay zekâ asistanıyla (Claude Code)}\label{sec:claude}
+TeX çıkarıldıktan sonra kart, çevrilecek dosyanın ve bu kitaba özel çeviri
+talimatının (kitap klasöründeki \dosya{CEVIRI\_TALIMATI.md}) tam yollarını ve
+``Claude Code'a şunu yaz:'' başlığı altında hazır bir istem gösterir. İstemi
+Claude Code'a verin; asistan talimatı okur, metni bölümlere böler, ortak bir
+terim sözlüğü çıkarır, çevirir ve \dosya{EXPORT\_TR.tex}'i kaydeder. Ardından
+arayüzde \dugme{2 · Çevrilmiş TeX'i derle} düğmesine basın.
+
+Kaynak koddan kurulumda proje klasöründe Claude Code'u açıp yalnızca
+\textbf{``bu kitabı çevir''} demeniz de yeterlidir: Claude, depodaki
+\dosya{CEVIRI\_TALIMATI.md} dosyasını okur ve akışı (çıkar, çevir, derle)
+kendisi yürütür.
+
+%% ===================== YEREL MODEL ======================================
+\section{Yerel Model ile Çevir (Beta)}
+
+\begin{enumerate}
+  \item Orta alana kitabı (PDF ya da EPUB) yükleyin. Kitap bu yolun
+        desteklediği kaynak dilde olmalıdır (Bölüm~\ref{sec:ikiyol}'deki
+        tablo; dil denetimi: Bölüm~\ref{sec:dil}).
+  \item \dugme{Yerel model ile çevir} kartında \dugme{Kaynak dil} listesine
+        bakın: kitabın dili kendiliğinden ölçülür ve güveniyle birlikte yazar.
+        Tespit belirsizse \dugme{Çevir}den önce dili seçmeniz istenir; tespit
+        yanlışsa dili buradan değiştirin.
+  \item \dugme{Model} listesinden çeviri modelini seçin (önerilen ve
+        varsayılan: HY-MT 1.5 7B; listede ``önerilen'' diye işaretlidir). Liste, arayüz ilk açıldığında bir kez
+        kendiliğinden taranır; bir modeli yeni hazırladıysanız ya da bir
+        sunucuyu yeni açtıysanız \dugme{Modelleri tara} düğmesine basın
+        (Bölüm~\ref{sec:modeller}). Kullanılamayan bir model seçiliyse
+        \dugme{Çevir} düğmesi soluk kalır ve nedeni altında yazar.
+  \item \dugme{Çevir} düğmesine basın. Model önce birkaç saniyelik son bir
+        denetimden geçer; sunucu kapandıysa ya da model artık yoksa iş
+        başlamaz ve nedeni yazılır. Denetim geçerse çıkarım, çeviri, kalite
+        denetimi ve dizgi kendiliğinden ilerler; ilerleme panelinde çeviriyi
+        yapan model yazar.
+  \item İş bitince \dugme{PDF'yi aç} ve \dugme{İndir} düğmeleri çıkar. PDF
+        kitap klasöründe \dosya{compiled/\allowbreak<kitap\_adı>\_TR.pdf}
+        olarak kaydedilir.
+\end{enumerate}
+
+\begin{notkutu}
+\textbf{Makine çevirisi künyesi:} Bu yolun PDF ve EPUB çıktısının başında
+(kitabın özgün kapağı basıldıysa onun arkasında) kısa bir künye bulunur:
+metnin bu bilgisayardaki hangi yerel modelle çevrildiğini, gözden geçirilmemiş
+bir taslak olduğunu, kaynak dili ve çeviri tarihini yazar. ``PDF'den TeX
+çıkar'' çıktısında künye yoktur. Makine çevirisini kamuya açık bir yerde
+paylaşacaksanız künyeyi silmeyin ve kullandığınız modelin lisansındaki
+koşullara bakın (lisans metinlerinin bağlantıları: Bölüm~\ref{sec:lisans}).
+\end{notkutu}
+
+Bu yolun çıktısı ön okuma ve taslak içindir (bkz.\ Bölüm~\ref{sec:ikiyol}'deki
+dürüst not). Kalite denetiminin eşikleri HY-MT 1.5 7B'ye göre ayarlıdır; başka
+bir modelle çevrilen ilk kitapta \dosya{qc\_report.txt} dosyasını gözden
+geçirin.
+
+\subsection{Dil denetimi}\label{sec:dil}
+Yerel model kitabın dilini iki kapıda ölçer:
+\begin{enumerate}
+  \item \textbf{Ön kapı (çıkarımdan önce):} PDF'nin metin katmanına ya da
+        EPUB metnine bakar. Metin katmanı olan ve dili bu yolda
+        desteklenmeyen bir kitapta iş, uzun süren çıkarım başlamadan
+        saniyeler içinde durur. Metin katmanı yoksa (taranmış kitap) ya da
+        sonuç belirsizse ön kapı geçer ve kararı tam kapıya bırakır.
+  \item \textbf{Tam kapı (çıkarımdan sonra):} Çıkarılan metni (taranmış
+        kitapta OCR sonucunu) ölçer ve çeviri başlamadan karar verir.
+        Ölçülen dil desteklenen dillerden biriyse çeviriye aktarılır: modele
+        verilen talimat o dilden Türkçeye çevirmesini söyler, çevrilmeden
+        kalan satırlar o dilde aranır. Tespit belirsizse (ölçülebilir
+        düzyazı az ya da güven düşük) iş durmaz, kaynak İngilizce varsayılır
+        ve \dosya{pipeline.log} dosyasına uyarı yazılır.
+\end{enumerate}
+Kartta dili elle seçtiyseniz (tespitten farklı bir dil ya da tespit
+belirsizken yapılan seçim) iki kapı da atlanır ve çeviri seçtiğiniz dille
+yapılır.
+
+Kitabın desteklenmeyen bir dilde (ör.\ Çince ya da Portekizce) olduğu
+güvenle ölçülürse iki kapı da işi \textbf{çıkış kodu 4} ile durdurur; çeviri
+hiç başlamaz. Arayüz bu durumda ``Yerel model bu kitabı çevirmedi: kitabın
+dili desteklenmiyor (kaynak dil kapısı, çıkış kodu 4).'' iletisini, altında
+tespit edilen dili ve desteklenen dillerin listesini gösterir.
+
+\begin{notkutu}
+\textbf{Tespit yanlışsa:} kitabın dili aslında destekleniyorsa kartın
+\dugme{Kaynak dil} listesinden doğru dili seçip yeniden çevirin. Komut
+satırında (bkz.\ Bölüm~\ref{sec:komut}) \dosya{-{}-kaynak-dil} bayrağı dili
+elle verir (ör.\ \dosya{-{}-kaynak-dil de}), \dosya{-{}-dil-kontrolu-yok} ise
+kaynağı İngilizce varsayar. İki bayrak da iki kapıyı birden atlar;
+\dosya{-{}-dil-kontrolu-yok} arayüzde yoktur ve yalnızca tespit yanlış
+olduğunda kullanılır.
+\end{notkutu}
+
+%% ===================== MODEL KAYNAKLARI =================================
+\section{Model Kaynakları}\label{sec:modeller}
+
+Önerilen ve varsayılan çeviri modeli \textbf{HY-MT 1.5 7B}'dir (MLX, kimliği
+\dosya{hymt-7b}): en çok sınanan model budur ve kalite denetiminin eşikleri
+onun çıktısına göre ayarlıdır. DMG kurulumunda Bileşenler ekranından, kaynak
+koddan kurulumda Bölüm~\ref{sec:kaynak}'teki komutla kurulur. Onun yerine dört
+kaynaktan bir model seçilebilir; bu kaynaklar desteklenir ama \textbf{beta
+düzeyindedir ve daha az sınanmıştır}. Her kaynakta akış aynıdır:
+\textbf{hazırla} \(\rightarrow\) \dugme{Modelleri tara} \(\rightarrow\)
+\textbf{seç} \(\rightarrow\) \dugme{Çevir}.
+
+\vspace{6pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabular}{@{}L{2.6cm}L{7.6cm}L{5.0cm}@{}}
+\toprule
+\textbf{Kaynak} & \textbf{Hazırlık} & \textbf{Kimlik örneği} \\
+\midrule
+MLX klasörü & MLX biçimli model \dosya{models/} altına konur
+(\dosya{config.json}, \dosya{*.safetensors} ve tokenizer dosyalarıyla) &
+\dosya{mlx:qwen3-8b-mlx} \\
+Ollama & Ollama kurulur ve model indirilir (\dosya{ollama pull qwen3:8b});
+uygulama açılır ya da \dosya{ollama serve} çalıştırılır &
+\dosya{ollama:qwen3:8b} \\
+LM Studio & Model LM Studio'da indirilip yüklenir; Developer bölümünden yerel
+sunucu başlatılır ya da \dosya{lms server start} çalıştırılır &
+\dosya{lmstudio:qwen/\allowbreak qwen3-8b} \\
+GGUF dosyası & \dosya{.gguf} dosyası \dosya{models/} altına konur; doğrudan
+açmak için llama-cpp-python gerekir. Dosya Ollama ya da LM Studio'ya da
+yüklenebilir & \dosya{gguf:Qwen3-8B-\allowbreak Q4\_K\_M.gguf} \\
+\bottomrule
+\end{tabular}
+\vspace{8pt}
+
+Kitapçevir Ollama'yı ve LM Studio'yu bu programların varsayılan
+adreslerinde arar; programların portunu değiştirmediyseniz hiçbir ayar
+gerekmez. Adresler tek yerde tanımlıdır: \dosya{config/\allowbreak
+defaults.py} dosyasındaki \dosya{OLLAMA\_\allowbreak DEFAULT\_\allowbreak URL}
+ve \dosya{LMSTUDIO\_\allowbreak DEFAULT\_\allowbreak URL}. llama.cpp sunucusu, Jan,
+vLLM gibi OpenAI uyumlu başka bir yerel sunucu da kullanılabilir: adresi
+\dosya{config/\allowbreak mt\_sources.json} dosyasına yazılır, kimliği
+\dosya{openai:<adres>|<model>} biçimindedir (ör.\
+\dosya{openai:http://127.0.0.1:8080/v1|qwen}).
+
+\subsection{Arayüzde seçim}
+\begin{itemize}
+  \item Listede yalnızca taramada gerçekten bulunan modeller görünür.
+        Sunucusu kapalı bir kaynaktan model listelenmez; kartta o kaynağın
+        durumu yazar (ör.\ ``Ollama sunucusu kapalı ya da erişilemiyor
+        (\ldots)''). Yerleşik HY-MT 1.5 7B listede her zaman bulunur.
+  \item Her seçenekte modelin adı ve kaynağı, düşünme durumu, biliniyorsa
+        ayrıntısı (parametre sayısı, niceleme, mimari) ve boyutu yazar; HY-MT
+        1.5 7B ``önerilen'' diye işaretlidir. Kullanılamayan
+        model ``kullanılamaz'' diye işaretlidir; seçilirse \dugme{Çevir}
+        soluk kalır ve nedeni altında yazar.
+  \item Seçim hatırlanır. Son seçilen model bir sonraki taramada
+        bulunamazsa varsayılan model seçilir ve bu durum kartta yazar. İş
+        sürerken model listesi ve \dugme{Modelleri tara} kapalıdır.
+  \item Model çeviri sırasında kullanılamaz hâle gelirse (ör.\ sunucu
+        kapandı) iş \textbf{çıkış kodu 5} ile biter ve arayüz ``Seçili model
+        kullanılamadı; nedeni aşağıda.'' iletisini gösterir.
+\end{itemize}
+
+\subsection{Başka klasördeki model: sembolik bağ}
+Kitapçevir yalnızca \dosya{models/} klasörünü tarar (DMG kurulumunda
+\dosya{veri/models/}); LM Studio'nun ya da Hugging Face'in indirme klasörleri
+taranmaz. Başka yerdeki bir modeli kopyalamadan kullanmak için
+\dosya{models/} altına sembolik bağ koyun (kaynak koddan kurulumda proje
+klasöründe):
+
+\begin{komut}
+ln -s \textasciitilde/.lmstudio/models/<yayıncı>/<Model-MLX> models/<Model-MLX>
+\end{komut}
+
+DMG kurulumunda bağın hedefi
+\dosya{\textasciitilde/Library/\allowbreak Application Support/\allowbreak Kitapçevir/\allowbreak veri/\allowbreak models/<Model-MLX>}
+olur.
+
+\subsection{GGUF dosyasını doğrudan açmak: llama-cpp-python}
+llama-cpp-python \textbf{isteğe bağlı} bir bağımlılıktır. DMG kurulumunda
+Bileşenler ekranındaki \textbf{GGUF desteği} onu kurar. Kaynak koddan
+kurulumda \dosya{requirements.txt} onu kurmaz. Kurulu değilse uygulama yine
+açılır, GGUF dosyaları listede ``kullanılamaz'' görünür ve kurulum komutu
+yazılır. Kaynak koddan kurulumda Apple Silicon'da Metal desteğiyle kurulum
+(proje klasöründe):
+
+\begin{komut}
+CMAKE\_ARGS="-DGGML\_METAL=on" ./venv/bin/pip install llama-cpp-python
+\end{komut}
+
+\subsection{Düşünen modeller}
+Qwen3, gpt-oss gibi modeller yanıttan önce ``düşünür''. Kural şudur:
+\textbf{düşünme resmî yolla kapatılabiliyorsa kapatılır; kapatılamıyorsa model
+düşünerek çevirir.} HY-MT 1.5 7B düşünmeyen bir modeldir.
+\begin{itemize}
+  \item \textbf{Kapatılabiliyorsa:} model düşünmeden çevirir (ör.\ Ollama'da
+        isteğe düşünmeyi kapatan alan eklenir, LM Studio'da düşünme kapalı
+        istenir, MLX modelinde sohbet şablonuna kapatma değişkeni geçer).
+  \item \textbf{Kapatılamıyorsa:} model düşünerek çevirir; her parçaya ayrı
+        bir düşünme payı ayrılır ve iş daha yavaş sürer. Pay dolup cevap
+        gelmeyen parça bir kez yeniden denenir; yine cevap yoksa o parça
+        özgün dilinde kalır ve işaretlenir (kalite raporunda görünür), çeviri
+        sürer.
+  \item \textbf{Cevap üretemiyorsa:} model parçaların çoğunda cevap
+        üretemiyorsa çeviri ``Bu model düşünmesini bitirip çeviri
+        üretemiyor: \ldots'' iletisiyle, \textbf{çıkış kodu 5} ile durur ve
+        önerilen model adıyla başka bir model seçmeniz istenir.
+\end{itemize}
+Listede her modelin düşünme durumu yazar (``düşünme yok'', ``düşünme kapalı
+çalışır'', ``düşünen model --- düşünerek çevirir, daha yavaştır'' ya da
+``düşünme durumu bilinmiyor''); kart seçili modelinkini de gösterir. Düşünme
+durumu bilinmeyen ama düşündüğü bilinen model için kartta ``düşünen model;
+yavaş olabilir'' notu çıkar.
+Ayrıntı ve ayarlar: \dosya{docs/\allowbreak YENI\_MODEL\_EKLEME.md}, Bölüm~6.
+
+\subsection{Bilinmesi gerekenler}
+\begin{itemize}
+  \item \textbf{Yalnızca bu bilgisayar:} sunuculara yalnızca yerel adresle
+        (\dosya{127.0.0.1}, \dosya{localhost}, \dosya{::1}) bağlanılır; API
+        anahtarı desteği yoktur.
+  \item \textbf{Dil:} hedef dil yalnızca Türkçedir. Kaynak dil
+        Bölüm~\ref{sec:ikiyol}'deki tabloda yazar; dil kapıları her modelde
+        aynen çalışır.
+  \item \textbf{Çeviri belleği model başına ayrıdır:} her model yalnızca
+        kendi önceki çevirilerini kullanır; HY-MT'nin mevcut kayıtları olduğu
+        gibi korunur.
+  \item \textbf{Bellek:} Ollama / LM Studio'da yüklü modeller, uygulamanın
+        kendi sürecindeki model ve PDF çıkarımı aynı birleşik belleği
+        paylaşır; kullanmadığınız modelleri sunucuda boşaltın.
+  \item \textbf{Ayar dosyaları} (isteğe bağlı, git dışı): çoğu zaman
+        gerekmez. Sunucu varsayılandan farklı bir portta çalışıyorsa ya da
+        llama.cpp sunucusu gibi ek bir sunucu kullanılacaksa adresi
+        \dosya{config/\allowbreak mt\_sources.json} dosyasına; modele kısa
+        bir ad ya da bağlam uzunluğu gibi bir ayar gerekiyorsa kaydı
+        \dosya{config/\allowbreak mt\_engines.json} dosyasına elle yazılır.
+        Örnek dosya yoktur; kısa örnekler
+        \dosya{docs/\allowbreak YENI\_MODEL\_EKLEME.md} dosyasındadır.
+        Tarama klasörü bu dosyalarla eklenemez.
+\end{itemize}
+
+Kimlik biçimlerinin, ayar alanlarının ve bütün hata iletilerinin ayrıntılı
+anlatımı: \dosya{docs/\allowbreak YENI\_MODEL\_EKLEME.md}.
+
+%% ===================== İLERLEME =========================================
+\section{İlerleme, İptal ve Sonuç}
+
+\begin{itemize}
+  \item \textbf{İlerleme paneli} işin adını (``TeX çıkarılıyor'', ``Çeviri
+        sürüyor'', ``Kitap diziliyor''), o anki fazı ve geçen süreyi
+        gösterir. İlerleme çubuğu yalnızca pipeline gerçek bir sayaç
+        verdiğinde (segment ya da sayfa sayısı) çizilir; sayacı olmayan
+        aşamada çubuk yoktur.
+  \item \textbf{İptal:} Paneldeki \dugme{İptal} düğmesi işi ve açtığı alt
+        süreçleri durdurur.
+  \item \textbf{Başarılı sonuç:} ``PDF hazır'' iletisi, \dugme{PDF'yi aç} ve
+        \dugme{İndir} düğmeleri ve PDF'nin dosya yolu.
+  \item \textbf{Kalite eşiği altında:} ``PDF üretildi ama kalite denetimi
+        eşiğin altında kaldı'' iletisi çıkar. PDF yine açılabilir; ayrıntı
+        kitap klasöründeki \dosya{qc\_report.txt} dosyasındadır.
+  \item \textbf{Hata:} Hata iletisi ve ``Son çıktı'' bölümünde işin son
+        satırları gösterilir. Tam kayıt kitap klasöründeki
+        \dosya{pipeline.log} dosyasındadır.
+\end{itemize}
+
+%% ===================== ARAÇLAR ==========================================
+\section{Araçlar}\label{sec:araclar}
+
+\begin{description}[style=nextline]
+  \item[Terimler] Seçili kitabın kendi sözlüğünü (kitap klasöründeki
+        \dosya{glossary\_shared.tsv}; bkz.\ Bölüm~\ref{sec:sozluk}) gösterir.
+        Kaynak dildeki terimde ya da Türkçe karşılıkta arar; tam eşleşme yoksa
+        en yakın terimi benzerlik oranıyla önerir. Kitap seçilmemişse ya da
+        kitabın sözlüğü henüz yoksa sekme bunu söyler.
+  \item[Bellek] Çeviri belleğindeki kayıt ve onaylı kayıt sayısını gösterir;
+        yazdığınız metne benzeyen kayıtları (en çok beş) kaynak ve
+        çevirisiyle listeler. Bu sekme belleğe yalnızca bakar, bir şey
+        değiştirmez.
+  \item[Karşılaştırma] Orijinal ve çevrilmiş PDF'yi yükleyip
+        \dugme{Karşılaştır}'a basınca iki PDF'yi sayfa sayfa piksel düzeyinde
+        karşılaştırır: karşılaştırılan sayfa sayısı, ortalama fark ve sorunlu
+        sayfalar gösterilir, HTML rapor indirilebilir. ``Karşılaştırma
+        ayarları''ndan sayfa sınırı (varsayılan 50 ya da tüm sayfalar), DPI
+        (72--300, varsayılan 150) ve görsellerin rapora eklenip eklenmeyeceği
+        seçilir.
+\end{description}
+
+\subsection{Kitap sözlüğü}\label{sec:sozluk}
+Terim tutarlılığı her kitabın kendi sözlüğüyle sağlanır; bütün kitaplara
+uygulanan sabit bir genel alan sözlüğü yoktur. Sözlük kitap klasöründeki
+\dosya{glossary\_shared.tsv} dosyasıdır: UTF-8, her satır ``kaynak terim,
+sekme, Türkçe karşılık'' (isteğe bağlı üçüncü sütun not); kaynak terim
+kitabın kendi dilindedir. İki yol aynı biçimi kullanır.
+
+\begin{itemize}
+  \item \textbf{PDF'den TeX çıkar:} Sözlüğü çeviriyi yapan çıkarır. Yapay
+        zekâ asistanı, kitaba özel \dosya{CEVIRI\_TALIMATI.md} gereği
+        çeviriden önce kitabın tekrar eden teknik terimlerini (50--100 terim)
+        bu dosyaya yazar ve bütün parçalarda kullanır.
+  \item \textbf{Yerel model ile çevir:} Kitap klasöründe sözlük yoksa
+        uygulama, çeviri bittikten sonra kitabın sık geçen terimlerini kaynak
+        dilde (altı dilin hepsinde) çıkarır, her terimi bir kez, geçtiği
+        cümleyle birlikte seçili modele çevirtir ve dosyaya yazar. Kaynak dili
+        İngilizce olan kitapta, elle doğrulanmış başlangıç terimlerinden
+        (\dosya{glossary/\allowbreak curated.json}) kitapta geçenler önce
+        gelir. Ardından çeviri bu sözlükle denetlenir: çıktıda özgün dilinde
+        kalmış terim sözlükteki karşılığıyla değiştirilir; aynı terimin
+        farklı çevrildiği yerler kalite raporunda düşük önemli uyarı olarak
+        görünür.
+  \item \textbf{Var olan sözlük korunur:} Dosya zaten varsa (sizin, TeX
+        yolunun ya da önceki bir çevirinin yazdığı) üzerine yazılmaz, olduğu
+        gibi kullanılır.
+\end{itemize}
+
+%% ===================== KOMUT SATIRI =====================================
+\section{Komut Satırından Kullanım}\label{sec:komut}
+
+Arayüz, işleri aşağıdaki betikleri ayrı bir süreçte çalıştırarak yapar;
+kaynak koddan kurulumda aynı işler doğrudan terminalden de yapılabilir. Sanal
+ortam etkin olmalıdır (\dosya{source venv/bin/activate}).
+
+\subsection{PDF'den TeX çıkar}
+\begin{komut}
+python 1\_cikar.py kitap.pdf \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \# \(\rightarrow\) output/<ad>/EXPORT.tex\\
+\# EXPORT.tex'i çevirin \(\rightarrow\) aynı klasöre EXPORT\_TR.tex olarak kaydedin\\
+python 2\_derle.py output/<ad>/EXPORT\_TR.tex \ \ \# \(\rightarrow\) Türkçe PDF
+\end{komut}
+
+\dosya{1\_cikar.py} aynı adlı çıktı klasöründe farklı bir kitap bulursa durur
+ve \dosya{-{}-name} ile farklı bir ad vermenizi ister. \dosya{2\_derle.py}
+için \dosya{-{}-output-dir output/<ad>} seçeneği, kimlik satırları silinmiş
+ya da dosya taşınmışsa kitabın klasörünü elle gösterir.
+
+\subsection{Yerel model ile çevir}
+\begin{komut}
+python translate\_book.py kitap.pdf \ \ \ \ \# PDF \(\rightarrow\) Türkçe PDF\\
+python translate\_book.py kitap.epub \ \ \ \# EPUB \(\rightarrow\) Türkçe PDF (+ Türkçe EPUB)
+\end{komut}
+
+Sık kullanılan seçenekler:
+\begin{itemize}
+  \item \dosya{-{}-name "Kitap Adı"}: çıktı klasörünün ve PDF'nin adı.
+  \item \dosya{-{}-resume}: çökme sonrasında kaldığı yerden devam eder.
+  \item \dosya{-{}-book-type}: kitap türü; türe göre kuralları (ör.\ kalite
+        denetimi) etkiler.
+  \item \dosya{-{}-skip-compile}: yalnızca \dosya{.tex} üretir, PDF derlemez.
+  \item \dosya{-{}-batch}: birden çok kitabı sırayla işler.
+  \item \dosya{-{}-mt-engine KİMLİK}: çeviri modelini seçer (varsayılan
+        \dosya{hymt-7b}); ör.\ \dosya{ollama:qwen3:8b}. Biçimler:
+        Bölüm~\ref{sec:modeller}. Arayüzün son seçimini okumaz.
+  \item \dosya{-{}-dil-kontrolu-yok}: kaynak dilin iki kapısını birden
+        (çıkarımdan önceki ön kapı ve çıkarımdan sonraki tam kapı) atlar ve
+        kaynağı İngilizce varsayar. Yalnızca dil tespiti yanlışsa, yani
+        kitabın dili aslında destekleniyorken kullanılır; arayüzde yoktur
+        (bkz.\ Bölüm~\ref{sec:dil}).
+  \item \dosya{-{}-kaynak-dil KOD}: kitabın kaynak dilini elle verir
+        (\dosya{en}, \dosya{de}, \dosya{ru}, \dosya{fr}, \dosya{es} ya da
+        \dosya{it}); iki dil kapısını da atlar. Arayüzdeki karşılığı kartın
+        \dugme{Kaynak dil} listesidir.
+\end{itemize}
+Kitabın desteklenmeyen bir dilde olduğu güvenle ölçülürse
+\dosya{translate\_book.py} çeviriye başlamadan \textbf{çıkış kodu 4} ile
+durur.
+Çıktı \dosya{output/<ad>/} altında toplanır: \dosya{source/} (ara dosyalar),
+\dosya{compiled/} (PDF), \dosya{qc\_report.txt} (kalite raporu),
+\dosya{pipeline.log} (iş kaydı).
+
+Seçili model kullanılamıyorsa (kimlik geçersiz, sunucu kapalı, model yok,
+bu Mac'in belleği yetmiyor, çeviri sırasında sunucu bağlantısı koptu ya da
+düşünen model parçaların çoğunda cevap üretemedi) \dosya{translate\_book.py}
+\textbf{çıkış kodu 5} ile durur; model ve bellek çıkarımdan önce denetlendiği
+için uzun PDF çıkarımı boşuna beklenmez (bellek: Bölüm~\ref{sec:donanim}).
+Model seçerek çeviri ve bulunan modellerin listesi:
+
+\begin{komut}
+python translate\_book.py kitap.pdf --mt-engine ollama:qwen3:8b\\
+python -m core.mt\_engines.discovery \ \ \ \ \# bulunan modeller, sunucu durumları
+\end{komut}
+
+%% ===================== SORUN GİDERME ====================================
+\section{Sık Karşılaşılan Sorunlar}
+
+% Tablo uzadıkça sayfaya sığmayabilir: longtable sayfa sonunda bölünür,
+% başlık satırı yeni sayfada tekrarlanır.
+\renewcommand{\arraystretch}{1.35}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{\fill}
+\begin{longtable}{@{}L{5.7cm}L{9.7cm}@{}}
+\toprule
+\textbf{Belirti} & \textbf{Çözüm} \\
+\midrule
+\endhead
+macOS uygulamayı açmıyor (tanınmayan geliştirici uyarısı) & Uygulama
+imzasızdır; Bölüm~\ref{sec:ilkacilis}'teki adımları izleyin: Finder'da sağ tık
+\ok{} Aç; macOS 15 ve sonrasında Sistem Ayarları \ok{} Gizlilik ve Güvenlik
+\ok{} Yine de Aç. \\
+Açılış ekranında ``Kitapçevir'i Uygulamalar klasörüne taşıyıp oradan açman
+önerilir.'' & Uygulama DMG'nin içinden ya da taşınmadan açıldı. Uygulamayı
+Uygulamalar klasörüne sürükleyip oradan açın. \\
+Sihirbaz: ``Datalab model lisansı kabul edilmeden kurulum sürdürülemez'' &
+PDF desteği zorunlu bileşendir ve modelleri olmadan çalışmaz. Kurulumu
+sürdürmek için lisansı okuyup kabul edin. \\
+Sihirbaz: ``Boş disk: \ldots{} Yetmiyor: \ldots{} daha gerekiyor.'' & Yer
+açın ya da isteğe bağlı bileşenleri (ör.\ HY-MT) seçmeden kurun; onları sonra
+Bileşenler ekranından ekleyebilirsiniz. \\
+Sihirbaz: ``Bağlantı yok.'' & İnternet bağlantısını açıp \dugme{Yeniden
+dene}'ye basın. Yarım inen dosyalar saklanır. \\
+Sihirbazda HY-MT seçilemiyor & Bu Mac'in belleği HY-MT'ye yetmiyor
+(Bölüm~\ref{sec:donanim}). ``PDF'den TeX çıkar'' yolunu kullanın. \\
+``Kurulum başlatılamadı'' ekranı & Ekrandaki iletiyi ve günlüğü okuyun
+(\dugme{Göster} günlük dosyasını açar). Günlükler
+\dosya{\textasciitilde/Library/\allowbreak Logs/\allowbreak Kitapçevir/}
+altındadır. \\
+Arayüz ``yalnızca macOS'ta çalışır'' ya da ``Apple Silicon (M serisi) bir
+Mac ister'' yazıp duruyor & Kitapçevir yalnızca Apple Silicon Mac'te çalışır.
+Kaynak koddan kurulumda Apple Silicon Mac'te bile bu ileti çıkıyorsa Python
+Rosetta altında (x86\_64) çalışıyordur; sanal ortamı arm64 Python ile yeniden
+kurun. \\
+\dugme{Çevir} soluk, seçili model ``kullanılamaz'' & Nedeni kartta yazar.
+HY-MT kurulu değilse DMG kurulumunda Bileşenler ekranından indirin; kaynak
+koddan kurulumda \dosya{mlx\_lm.convert} komutunu çalıştırın
+(Bölüm~\ref{sec:kaynak}); diğer modeller için Bölüm~\ref{sec:modeller}. \\
+Ollama ya da LM Studio modeli listede yok & Sunucu kapalıdır; kartta durumu
+yazar. Ollama uygulamasını açın (ya da \dosya{ollama serve}) veya LM
+Studio'da yerel sunucuyu başlatın (\dosya{lms server start}), sonra
+\dugme{Modelleri tara}. LM Studio'da model yüklü değilse ve isteğe bağlı
+yükleme (Just-in-Time) kapalıysa model listelenmez. Sunucu varsayılandan
+farklı bir portta çalışıyorsa adresi \dosya{config/\allowbreak
+mt\_sources.json} dosyasına yazın. \\
+Başka klasördeki bir model listede yok & Yalnızca \dosya{models/} taranır;
+\dosya{models/} altına sembolik bağ koyun (Bölüm~\ref{sec:modeller}). \\
+GGUF dosyası ``kullanılamaz'', kurulum komutu yazıyor & llama-cpp-python
+kurulu değil (isteğe bağlıdır). DMG kurulumunda Bileşenler ekranından GGUF
+desteğini indirin; kaynak koddan kurulumda komutla kurun ya da dosyayı
+Ollama / LM Studio üzerinden kullanın. \\
+Çıkış kodu 5, ``Seçili model kullanılamadı; nedeni aşağıda.'' & Model
+çeviriden önce ya da çeviri sırasında kullanılamaz hâle geldi (sunucu kapalı,
+model yok, bağlantı koptu). Nedeni iletinin altında ve \dosya{pipeline.log}
+dosyasında yazar. \\
+``Bu model düşünmesini bitirip çeviri üretemiyor: \ldots'' (çıkış kodu 5) &
+Düşünmesi kapatılamayan model parçaların çoğunda cevap üretemedi. İletide
+önerilen modeli (HY-MT 1.5 7B) ya da düşünmeyen başka bir model seçin. \\
+``Yalnız bu bilgisayardaki sunuculara bağlanılır; \ldots'' & Başka bir
+bilgisayardaki sunucu desteklenmez; adres \dosya{127.0.0.1},
+\dosya{localhost} ya da \dosya{::1} olmalı. \\
+\dugme{2 · Çevrilmiş TeX'i derle} soluk & Çeviri, \dosya{EXPORT.tex} ile aynı
+klasörde tam olarak \dosya{EXPORT\_TR.tex} adıyla durmalıdır. Dosya
+kaydedildikten sonra düğme birkaç saniye içinde kendiliğinden açılır;
+açılmazsa sol kenardaki \dugme{Kitap adı}'nın TeX'i çıkarırken
+kullandığınızla aynı olduğuna bakın. \\
+Kitap yüklenmiyor, boyut sınırı iletisi çıkıyor & Yükleme sınırı 500 MB'tır;
+daha büyük kitaplar için kaynak koddan kurulumda komut satırını kullanın. \\
+\dosya{xelatex: command not found} (kaynak koddan kurulum) & MacTeX'i kurun
+ve yeni bir terminal açın. \\
+Derleme: ``hangi kitaba ait olduğu çözülemedi'' & Çevrilmiş dosyada
+\dosya{\% KITAPCEVIR-META} satırları silinmiş olabilir. \dosya{2\_derle.py}'ye
+\dosya{-{}-output-dir output/<ad>} verin. \\
+Derleme: ``full\_book.md bulunamadı'' & Önce TeX'i çıkarın (aynı kitap
+adıyla). \\
+Derleme: ``UTF-8 değil'' & Dosyayı UTF-8 olarak kaydedin. \\
+``FARKLI bir kitap var'' & Aynı adlı çıktı klasöründe başka bir kitap var;
+sol kenarda (ya da \dosya{-{}-name} ile) farklı bir kitap adı verin. \\
+``Yerel model bu kitabı çevirmedi: kitabın dili desteklenmiyor'' (çıkış
+kodu 4) & Kitabın dili desteklenen dillerden biri değilse bu beklenen
+davranıştır. Dil aslında destekleniyorsa tespit yanlıştır; kartın
+\dugme{Kaynak dil} listesinden doğru dili seçip yeniden çevirin (komut
+satırında \dosya{-{}-kaynak-dil}, kitabın dilinin koduyla; bkz.\
+Bölüm~\ref{sec:dil}). \\
+Yerel model, TeX yoluyla derlenmiş bir kitabı çevirmeyi reddediyor & Bu
+bilinçli bir korumadır: yerel model önceki çevirinizin üzerine yazmaz.
+Kitabı model ile de çevirmek istiyorsanız farklı bir kitap adı verin. \\
+İlk PDF çok yavaş (kaynak koddan kurulum) & Marker modelleri ilk seferde
+iniyor (yaklaşık 3,5 GB); sonraki kitaplarda bu indirme yapılmaz. DMG
+kurulumunda modeller kurulum sırasında iner. \\
+``Bu Mac yerel model için yetersiz: \ldots'' (yerel model kartı kapalı) & Bu
+Mac 4 bit bir 7B modeli bile rahat çalıştıramaz
+(Bölüm~\ref{sec:donanim}). Model gerektirmeyen ``PDF'den TeX çıkar'' yolunu
+kullanın. \\
+Model listede ``bu Mac'e sığmaz (gerekli \textasciitilde\ldots{} GB,
+kullanılabilir \ldots{} GB)'' & Modelin tahmini gereksinimi bu Mac'in
+kullanılabilir belleğini aşıyor. Daha küçük ya da daha çok nicemlenmiş
+(ör.\ 4 bit) bir model seçin (Bölüm~\ref{sec:modeller}). \\
+\bottomrule
+\end{longtable}
+
+%% ===================== LİSANSLAR ========================================
+\section{Lisanslar}\label{sec:lisans}
+Kitapçevir GNU GPL v3.0 ile dağıtılır; tam metin deponun kökündeki
+\dosya{LICENSE} dosyasındadır. Kurulumda indirilen ya da kullanılan başlıca
+üçüncü taraf bileşenler kendi lisanslarıyla gelir. Koşullar burada
+özetlenmez; bağlayıcı olan, aşağıda bağlantısı verilen resmî lisans
+metinleridir.
+
+\begin{itemize}
+  \item \textbf{Marker ve Surya} (PDF çıkarımı; marker-pdf 1.10.2, surya-ocr
+        0.17.1): kod GPL-3.0-or-later; model ağırlıkları Datalab'ın ``AI Pubs
+        Open RAIL-M (değiştirilmiş)'' lisansıyla sunulur. Metinler:
+        \url{https://github.com/datalab-to/marker} (\dosya{LICENSE},
+        \dosya{MODEL\_LICENSE}) ve \url{https://github.com/datalab-to/surya}.
+        Ağırlıklar kurulumda Datalab'ın sunucusundan iner; sihirbaz
+        indirmeden önce lisansı gösterip onay ister.
+  \item \textbf{PyMuPDF} (PDF okuma ve sayfa işlemleri; GNU AGPL-3.0 ya da
+        Artifex ticari lisansı) ve \textbf{EbookLib} (EPUB; GNU
+        AGPL-3.0-or-later). Kaynak kodları ve lisans metinleri:
+        \url{https://github.com/pymupdf/PyMuPDF} ve
+        \url{https://github.com/aerkalov/ebooklib}.
+  \item \textbf{HY-MT 1.5 7B} (isteğe bağlı çeviri modeli): Tencent HY
+        Community License; metin:
+        \url{https://huggingface.co/tencent/HY-MT1.5-7B}
+        (\dosya{License.txt}). Kitapçevir, Berke Tezgöçen tarafından
+        geliştirilen bağımsız bir projedir; Tencent ile bağlantılı değildir,
+        Tencent tarafından desteklenmez ya da onaylanmaz.
+  \item \textbf{DejaVu yazı tipleri} (\dosya{fonts/}): lisans metni
+        \dosya{fonts/\allowbreak LICENSE-DejaVu.txt} dosyasındadır.
+  \item \textbf{TeX:} tectonic (MIT;
+        \url{https://github.com/tectonic-typesetting/tectonic}); tectonic'in
+        indirdiği TeX paketleri ve MacTeX, TeX Live bileşenlerinin kendi
+        özgür lisanslarıyla gelir.
+\end{itemize}
+
+Bileşenler ekranındaki \dugme{Lisanslar} bağlantısı uygulamanın lisans
+klasörünü açar: Kitapçevir'in GPL metni, kaynak kodu bağlantıları, Datalab
+ve Tencent lisanslarının resmî metinleri, DMG'deki Python'un
+(python-build-standalone; içine derlenen OpenSSL, SQLite, Tcl/Tk gibi
+kitaplıklar dahil) ve kurulumda inen uv, tectonic ve GGUF bileşenlerinin
+kendi lisans dosyaları; \dosya{00\_OKU.txt} hepsini sıralar. Kurulan Python
+paketlerinin lisansları kendi \dosya{*.dist-info} klasörlerindedir.
+
+%% ===================== TELİF ============================================
+\section{Telif Notu}
+Bu sistem kişisel okuma için tasarlanmıştır. Üretilen çeviriler yalnızca
+kişisel kullanım içindir (FSEK m.\ 38 --- kişisel kullanım için çoğaltma
+istisnası); satılmaz veya dağıtılmaz. Kitap dosyaları ve çeviri çıktıları
+depoya eklenmez.
+
+\end{document}

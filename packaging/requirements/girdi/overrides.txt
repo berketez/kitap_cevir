@@ -1,0 +1,4 @@
+# mlx-lm 0.30.7 "transformers>=5.0.0" ister; marker-pdf 1.10.2 / surya-ocr 0.17.1 "transformers<5" ister.
+# Mevcut venv (test edilen durum) transformers 4.57.6 ile çalışıyor (pip check bu çelişkiyi raporluyor).
+# Kilit bu test edilmiş durumu yeniden üretir. Kalıcı çözüm için bkz. RAPOR.md "Kodda/paketlemede gereken değişiklikler".
+transformers==4.57.6

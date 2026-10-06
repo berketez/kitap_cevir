@@ -1,0 +1,24 @@
+#!/bin/bash
+# xelatex → tectonic sarmalayıcı (PROTOTİP, 29 Eylül 2026).
+# latex_pipeline/compiler.py şu biçimde çağırır:
+#   xelatex -interaction=nonstopmode -file-line-error -no-shell-escape -output-directory=DIR FILE.tex
+# ve ardından DIR/FILE.log'u okur, DIR/FILE.pdf'nin varlığına bakar.
+# tectonic karşılığı: -X compile --keep-logs (FILE.log yazılsın) -Z continue-on-errors (hata olsa da PDF).
+# Kurulum düzeni: <kök>/tex/bin/tectonic, <kök>/tex/shim/xelatex (bu dosya), <kök>/tex/cache (paket önbelleği).
+set -u
+KOK="$(cd "$(dirname "$0")/.." && pwd)"
+OUTDIR=""
+INPUT=""
+for a in "$@"; do
+    case "$a" in
+        -output-directory=*) OUTDIR="${a#-output-directory=}" ;;
+        -interaction=*|-file-line-error|-no-shell-escape|-halt-on-error|-synctex=*) ;;  # tectonic'te karşılığı yok / varsayılan
+        -*) echo "xelatex(tectonic): bilinmeyen seçenek yok sayıldı: $a" >&2 ;;
+        *) INPUT="$a" ;;
+    esac
+done
+[ -n "$INPUT" ] || { echo "xelatex(tectonic): girdi dosyası verilmedi" >&2; exit 2; }
+export TECTONIC_CACHE_DIR="${TECTONIC_CACHE_DIR:-$KOK/cache}"
+ARGS=(-X compile --keep-logs --keep-intermediates --untrusted -Z continue-on-errors)
+[ -n "$OUTDIR" ] && ARGS+=(--outdir "$OUTDIR")
+exec "$KOK/bin/tectonic" "${ARGS[@]}" "$INPUT"

@@ -1,0 +1,42 @@
+\chapter{Orbital Transfer Basics}
+
+This chapter reviews the energy budget of a spacecraft that moves between two circular orbits around a single attracting body.
+
+\section{2.1 Impulsive Manoeuvres}
+
+A velocity change $\Delta v$ applied at the periapsis raises the apoapsis radius $r_A$ while the periapsis radius $r_P$ stays where it was.
+
+where  $\mu$  is the gravitational parameter of the central body and  $v_c = \sqrt{\mu/r}$  is the local circular speed. For a small burn, it is
+
+\begin{equation}
+\Delta v \simeq \frac{\mu}{2 r^{2} v_c}\,\Delta a
+\end{equation}
+
+and
+
+The estimate agrees with the energy argument of Section~\ref{sec:energy} and with the tabulated cases collected in \cite{tablo2013}.
+
+\textbf{Remark:} The same reasoning holds for a burn at the apoapsis, provided that $\Delta v$ remains small compared with $v_c$.
+
+\begin{itemize}
+  \item the thrust points along the local velocity $\vec{v}$ during the whole burn;
+  \item the propellant mass $m_p$ is negligible with respect to the dry mass $m_0$;
+  \item the burn time $\tau$ is much shorter than the orbital period $T$.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{transfer_sketch.png}
+\end{figure}
+
+Figure 2.1: Sketch of a two-impulse transfer between coplanar orbits.
+
+Motus omnis corporis circa Solem in orbe fit, et tempora periodica sunt in ratione sesquialtera distantiarum mediarum, quod experientia confirmat.
+
+The total cost of the manoeuvre is therefore  $\Delta v_{\rm tot} = \Delta v_1 + \Delta v_2$ , which is smallest when the transfer ellipse touches both circles.
+
+where
+
+$\Delta v_1$  and  $\Delta v_2$  denote the first and the second impulse, both measured in km/s.
+
+For a radius ratio $r_2/r_1$ above a critical value the three-impulse route becomes cheaper, and the transfer time $t_{12}$ grows accordingly.
